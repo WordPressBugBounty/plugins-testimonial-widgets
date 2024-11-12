@@ -118,7 +118,7 @@ esc_html__( 'new testimonial', 'testimonial-widgets' ),
 esc_url( $add_new_widget ),
 esc_html__( 'create testimonial widget', 'testimonial-widgets' )
 );
-
+/* translators: Publish box date format, see https://secure.php.net/date */
 $scheduled_date = date_i18n( 'M j, Y @ H:i', strtotime( $post->post_date ) );
 $messages['wpt-testimonial'] = array(
 0 => '',
@@ -126,7 +126,7 @@ $messages['wpt-testimonial'] = array(
 2 => esc_html__( 'Custom field updated.', 'testimonial-widgets' ),
 3 => esc_html__( 'Custom field deleted.', 'testimonial-widgets' ),
 4 => esc_html__( 'Testimonial updated.', 'testimonial-widgets' ),
-
+/* translators: %s: date and time of the revision */
 5 => $revision ? sprintf( esc_html__( 'Testimonial restored to revision from %s.', 'testimonial-widgets' ), wp_post_revision_title( absint( $revision ), false ) ) : false,
 6 => esc_html__( 'Testimonial saved.', 'testimonial-widgets' ) . $view_post_link_html,
 7 => esc_html__( 'Testimonial saved.', 'testimonial-widgets' ),

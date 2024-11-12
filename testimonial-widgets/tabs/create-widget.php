@@ -44,7 +44,6 @@ include(plugin_dir_path(__FILE__) . "create-widget-header.php");
 1. <?php echo TrustindexTestimonialsPlugin::___('Select testimonials'); ?>
 </h1>
 <div class="ti-box">
-
 <br />
 <div class="ti-row">
 <div class="ti-col">
@@ -63,7 +62,6 @@ include(plugin_dir_path(__FILE__) . "create-widget-header.php");
 */ ?>
 </div>
 </div>
-
 <br />
 <div class="ti-row">
 <div class="ti-col">
@@ -74,7 +72,7 @@ include(plugin_dir_path(__FILE__) . "create-widget-header.php");
 <div class="ti-row">
 <div class="ti-col">
 <div class="wp-warning-box">
-<span class='dashicons dashicons-warning'></span> 
+<span class='dashicons dashicons-warning'></span>
 <span><?php echo TrustindexTestimonialsPlugin::___("Widget title required!"); ?></span>
 </div>
 </div>
@@ -223,7 +221,7 @@ echo '<img height="20px" width="20px" src=' . esc_url($trustindex_testimonials_p
 <?php foreach (TrustindexTestimonialsPlugin::$widget_templates['templates'] as $style_id => $template) : ?>
 <?php
 $class_name = 'ti-full-width';
-if (in_array($template['type'], ['badge', 'button', 'floating', 'popup', 'sidebar'])) {
+if (in_array($template['type'], ['badge', 'button', 'floating', 'popup', 'sidebar', 'top-rated-badge'])) {
 $class_name = 'ti-half-width';
 }
 ?>
@@ -266,7 +264,7 @@ $class_name = 'ti-half-width';
 <?php else : ?>
 <?php
 $class_name = 'ti-full-width';
-if (in_array(TrustindexTestimonialsPlugin::$widget_templates['templates'][$style_id]['type'], ['badge', 'button', 'floating', 'popup', 'sidebar'])) {
+if (in_array(TrustindexTestimonialsPlugin::$widget_templates['templates'][$style_id]['type'], ['badge', 'button', 'floating', 'popup', 'sidebar', 'top-rated-badge'])) {
 $class_name = 'ti-half-width';
 }
 ?>
@@ -293,7 +291,7 @@ $class_name = 'ti-half-width';
 <?php elseif ($current_step == 4 || !$widget_setted_up) : ?>
 <?php
 $widget_type = TrustindexTestimonialsPlugin::$widget_templates['templates'][$style_id]['type'];
-$widget_has_reviews = !in_array($widget_type, ['button', 'badge']) || in_array($style_id, [23, 30, 32]);
+$widget_has_reviews = !in_array($widget_type, ['button', 'badge', 'top-rated-badge']) || in_array($style_id, [23, 30, 32]);
 ?>
 <h1 class="ti-free-title">
 4. <?php echo TrustindexTestimonialsPlugin::___('Set up widget'); ?>
@@ -333,7 +331,7 @@ $widget_has_reviews = !in_array($widget_type, ['button', 'badge']) || in_array($
 </div>
 <div class="ti-box">
 <div class="ti-header"><?php echo TrustindexTestimonialsPlugin::___('Widget Settings'); ?></div>
-<?php /* 
+<?php /*
 <div class="tab">
 <button class="tablinks" id="<?php echo $widget['4']['last_saved'] == 'general' ? 'active-tab' : '' ?>" onclick="openTab(event, 'General')"><?php echo TrustindexTestimonialsPlugin::___("General"); ?></button>
 <button class="tablinks" id="<?php echo $widget['4']['last_saved'] == 'appearance' ? 'active-tab' : '' ?>" onclick="openTab(event, 'Appearance')"><?php echo TrustindexTestimonialsPlugin::___("Appearance"); ?></button>
@@ -616,14 +614,12 @@ $widget_has_reviews = !in_array($widget_type, ['button', 'badge']) || in_array($
 </form>
 </div>
 </div>
-
 <div class="clear"></div>
 */ ?>
 <div class="ti-footer">
 <a href="?page=<?php echo esc_attr($page); ?>&step=5&id=<?php echo esc_attr($id); ?>&command=setup-widget&setup_widget&selected&style_id=<?php echo esc_attr($style_id); ?>&scss_set=<?php echo esc_attr($scss_set); ?>" class="btn-text btn-refresh ti-pull-right" data-loading-text="<?php echo TrustindexTestimonialsPlugin::___("Loading"); ?>"><?php echo TrustindexTestimonialsPlugin::___("Save and get code"); ?></a>
 <div class="clear"></div>
 </div>
-
 </div>
 <?php endif; ?>
 <?php else : ?>

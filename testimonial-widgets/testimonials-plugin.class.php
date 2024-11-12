@@ -528,14 +528,6 @@ $script_name = 'trustindex-js';
 if (!wp_script_is($script_name, 'enqueued')) {
 wp_enqueue_script($script_name, 'https://cdn.trustindex.io/' . 'loader.js', [], false, true);
 }
-$scripts = wp_scripts();
-if (isset($scripts->registered[$script_name]) && !isset($scripts->registered[$script_name]->extra['after'])) {
-wp_add_inline_script($script_name, '(function ti_init() {
-if(typeof Trustindex == "undefined"){setTimeout(ti_init, 1985);return false;}
-if(typeof Trustindex.pager_inited != "undefined"){return false;}
-Trustindex.init_pager(document.querySelectorAll(".ti-widget"));
-})();');
-}
 $start = strpos($w->review_content, 'data-layout-id="');
 $length = strpos($w->review_content, '" data-set-id') - $start;
 $layout_id = substr($w->review_content, $start, $length);
@@ -545,7 +537,7 @@ add_action('http_api_curl', function ($handle) {
 curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
 }, 10);
-$response = wp_remote_get("https://cdn.trustindex.io/" . "widget-assets/template/{$settings['language']}.json");
+$response = wp_remote_get("https://cdn.trustindex.io/" . "widget-assets/template/v2/{$settings['language']}.json");
 if (is_wp_error($response)) {
 $html = $this->get_alertbox('error', '<br />' . $this->___('Could not download the template for the widget.<br />Please reload the page.<br />If the problem persists, please write an e-mail to support@trustindex.io.'));
 $allowed_html = array(
@@ -560,6 +552,8 @@ $allowed_html = array(
 echo wp_kses($html, $allowed_html);
 die;
 }
+ $response['body'] = preg_replace('/<!-- VERIFIED BY TRUSTINDEX START.*?VERIFIED BY TRUSTINDEX END -->/s', '', $response['body']);
+ $response['body'] = str_replace('<img class=\"ti-platform-icon\" src=\"https:\/\/cdn.trustindex.io\/assets\/platform\/%platform%\/icon.svg\" alt=\"%platform%\" width=\"20\" height=\"20\" loading=\"lazy\" \/>', '', $response['body']);
 $this->template_cache = json_decode($response['body'], true);
 }
 $content = $this->template_cache[$settings['style_id']];
@@ -582,13 +576,13 @@ $content = preg_replace('/data-pager-autoplay-timeout=[\'"][^\'"]*[\'"]/m', 'dat
 $content = preg_replace('/data-set[_-]id=[\'"][^\'"]*[\'"]/m', 'data-set-id="' . $settings['set_id'] . '"', $content);
 $class_appends = ['ti-wp-testimonial-' . $w->id, 'ti-no-logo'];
 if ($settings['show_logos']) {
-array_push($class_appends, 'ti-no-logo');
+$class_appends []= 'ti-no-logo';
 }
 if ($settings['show_stars']) {
-array_push($class_appends, 'ti-no-stars');
+$class_appends []= 'ti-no-stars';
 }
 if ($settings['auto_height']) {
-array_push($class_appends, 'ti-auto-height');
+$class_appends []= 'ti-auto-height';
 }
 if ($w->css && !$only_preview)
 {
@@ -598,7 +592,7 @@ wp_add_inline_style("testimonial-widgets-css-live-" . $w->id . "-" . $settings['
 }
 else
 {
-wp_enqueue_style("testimonial-widgets-css-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], "https://cdn.trustindex.io/" . "assets/widget-presetted-css/" . $settings['style_id'] . "-" . $settings['set_id'] . ".css");
+wp_enqueue_style("testimonial-widgets-css-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], "https://cdn.trustindex.io/" . "assets/widget-presetted-css/v2/" . $settings['style_id'] . "-" . $settings['set_id'] . ".css");
 if (in_array($settings['style_id'], array(36,37,38,39)))
 {
 $content = str_replace('class="ti-widget"', 'id="override-preset-'. $settings['style_id'] .'" class="ti-widget"', $content);
@@ -673,74 +667,76 @@ public function parse_noreg_list_reviews($array = [])
 preg_match('/<!-- R-LIST -->(.*)<!-- R-LIST -->/', $array['content'], $matches);
 if (isset($matches[1])) {
 $reviewContent = "";
-if ($array['reviews'] && count($array['reviews'])) foreach ($array['reviews'] as $r) {
-$date = "&nbsp;";
-if ($r['date'] && $r['date'] != '0000-00-00') {
-$date = str_replace(self::$widget_month_names['en'], self::$widget_month_names[$array['settings']['language']], date($array['settings']['date_format'], strtotime($r['date'])));
-}
-if ($r['company_website'])
-{
-$input = trim($r['company_website'], '/');
-if (!preg_match('#^http(s)?://#', $input)) {
-$input = 'http://' . $input;
-}
-$urlParts = parse_url($input);
-$domain = preg_replace('/^www\./', '', $urlParts['host']);
-if ($r['company_name'])
-{
-$info = '<a href="http://www.' . $domain . '" target="_blank">' . $r['company_name'] . '</a>';
-}
-else
-{
-$info = '<a href="http://www.' . $domain . '" target="_blank">' . $domain . '</a>';
-}
-}
-else if ($r['company_name'])
-{
-$info = $r['company_name'];
-}
-else
-{
-$info = $date;
-}
-$rating_content = $this->get_rating_stars($r['star_rating']);
-$platform_name = ucfirst($this->getShortName());
-if (!$array['settings']['show_reviewers_photo']) {
-if (in_array($array['settings']['style_id'], [45, 46, 47, 48]))
-{
-$matches[1] = str_replace('<div class="ti-profile-img-square"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
-}
-else
-{
-$matches[1] = str_replace('<div class="ti-profile-img"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
-}
-}
-if ($r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']])
-{
-$reviewer_photo = $r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']];
-}
-else
-{
-$reviewer_photo = 'https://cdn.trustindex.io/' . 'assets/default-avatar/noprofile-06.svg';
-}
-$reviewContent .= str_replace([
-'%platform%',
-'%reviewer_photo%',
-'%reviewer_name%',
-'%created_at%',
-'%text%',
-'<span class="ti-star f"></span><span class="ti-star f"></span><span class="ti-star f"></span><span class="ti-star f"></span><span class="ti-star f"></span>'
-], [
-$platform_name,
-$reviewer_photo,
-$r['client_name'],
-$info,
-preg_replace('/\r\n|\r|\n/', "\n", html_entity_decode($r['content'], ENT_HTML5 | ENT_QUOTES)),
-$rating_content
-], $matches[1]);
-$reviewContent = str_replace('<div></div>', '', $reviewContent);
-}
-$array['content'] = str_replace($matches[0], $reviewContent, $array['content']);
+if ($array['reviews'] && count($array['reviews'])) {
+ foreach ($array['reviews'] as $r) {
+ $date = "&nbsp;";
+ if ($r['date'] && $r['date'] != '0000-00-00') {
+ $date = str_replace(self::$widget_month_names['en'], self::$widget_month_names[$array['settings']['language']], date($array['settings']['date_format'], strtotime($r['date'])));
+ }
+ if ($r['company_website'])
+ {
+ $input = trim($r['company_website'], '/');
+ if (!preg_match('#^http(s)?://#', $input)) {
+ $input = 'http://' . $input;
+ }
+ $urlParts = parse_url($input);
+ $domain = preg_replace('/^www\./', '', $urlParts['host']);
+ if ($r['company_name'])
+ {
+ $info = '<a href="http://www.' . $domain . '" target="_blank">' . $r['company_name'] . '</a>';
+ }
+ else
+ {
+ $info = '<a href="http://www.' . $domain . '" target="_blank">' . $domain . '</a>';
+ }
+ }
+ else if ($r['company_name'])
+ {
+ $info = $r['company_name'];
+ }
+ else
+ {
+ $info = $date;
+ }
+ $rating_content = $this->get_rating_stars($r['star_rating']);
+ $platform_name = ucfirst($this->getShortName());
+ if (!$array['settings']['show_reviewers_photo']) {
+ if (in_array($array['settings']['style_id'], [45, 46, 47, 48]))
+ {
+ $matches[1] = str_replace('<div class="ti-profile-img-square"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
+ }
+ else
+ {
+ $matches[1] = str_replace('<div class="ti-profile-img"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
+ }
+ }
+ if ($r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']])
+ {
+ $reviewer_photo = $r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']];
+ }
+ else
+ {
+ $reviewer_photo = 'https://cdn.trustindex.io/' . 'assets/default-avatar/noprofile-06.svg';
+ }
+ $reviewContent .= str_replace([
+ '%platform%',
+ '%reviewer_photo%',
+ '%reviewer_name%',
+ '%created_at%',
+ '%text%',
+ '<!-- STARS-CONTENT -->'
+ ], [
+ $platform_name,
+ $reviewer_photo,
+ $r['client_name'],
+ $info,
+ preg_replace('/\r\n|\r|\n/', "\n", html_entity_decode($r['content'], ENT_HTML5 | ENT_QUOTES)),
+ $rating_content
+ ], $matches[1]);
+ $reviewContent = str_replace('<div></div>', '', $reviewContent);
+ }
+ $array['content'] = str_replace($matches[0], $reviewContent, $array['content']);
+ }
 }
 if ($array['settings']['no_rating_text']) {
 if (in_array($array['settings']['style_id'], [6, 7])) {
@@ -838,20 +834,21 @@ $text = "";
 if (!is_numeric($rating_score)) {
 return $text;
 }
+ $fullStarUrl = '<img class="ti-star" src="https://cdn.trustindex.io/assets/platform/Google/star/f.svg" alt="Google" width="17" height="17" loading="lazy" />';
 for ($si = 1; $si <= $rating_score; $si++) {
-$text .= '<span class="ti-star f"></span>';
+$text .= $fullStarUrl;
 }
 $fractional = $rating_score - floor($rating_score);
 if (0.25 <= $fractional) {
 if ($fractional < 0.75) {
-$text .= '<span class="ti-star h"></span>';
+$text .= preg_replace('/f(\.svg)?"/', 'h$1"', $fullStarUrl);
 } else {
-$text .= '<span class="ti-star f"></span>';
+$text .= $fullStarUrl;
 }
 $si++;
 }
 for (; $si <= 5; $si++) {
-$text .= '<span class="ti-star e"></span>';
+$text .= preg_replace('/f(\.svg)?"/', 'e$1"', $fullStarUrl);
 }
 return $text;
 }
@@ -4009,7 +4006,7 @@ return $result[0]->auto_increment;
 }
 public function get_widget($id)
 {
-$widget_id = intval($id);
+$widget_id = (int)$id;
 $dbtable = $this->get_widget_tablename();
 global $wpdb;
 $result = $wpdb->get_row($wpdb->prepare("SELECT * FROM $dbtable WHERE id = %d", [$widget_id]));
@@ -4037,7 +4034,7 @@ return $result;
 }
 public function duplicate_widget($id)
 {
-$widget_id = intval($id);
+$widget_id = (int)$id;
 $dbtable = $this->get_widget_tablename();
 global $wpdb;
 $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM $dbtable WHERE id = %d", [$widget_id]));
@@ -4111,7 +4108,7 @@ $args['tax_query'] = array(
 array(
 'taxonomy' => 'wpt-testimonial-category',
 'field' => 'term_id',
-'terms' => intval($filter['category'])
+'terms' => (int)$filter['category'],
 )
 );
 }
