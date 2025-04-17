@@ -2,10 +2,8 @@
 Contributors: trustindex
 Donate link: https://www.trustindex.io/prices/
 Tags: reviews, ratings, recommendations, testimonials, widget, slider, review, rating, recommendation, testimonial, customer review
-Requires at least: 3.0.1
-Tested up to: 6.7
-Requires PHP: 5.2
-Stable tag: 1.4.6
+Tested up to: 6.8
+Stable tag: 1.4.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Plugin Name: WP Testimonials
@@ -14,7 +12,7 @@ Plugin URI: https://wordpress.org/plugins/testimonial-widgets/
 Author: Trustindex.io <support@trustindex.io>
 Author URI: https://www.trustindex.io/
 Text Domain: testimonial-widgets
-Version: 1.4.6
+Version: 1.4.7
 
 Display your Testimonials on your website fast and easily. 21 widget types, 25 widget styles available. (Free Plugin)
 
@@ -78,7 +76,7 @@ Download and activate the free plugin. Write and save at least 3 testimonials. C
 
 = Are the Testimonial Widgets fully responsive? =
 
-Yes, the Testimonial Widgets are fully responsive. You can control to show the number of testimonial columns on different devices (Desktop, Tablet, Mobile).
+Yes, the Testimonial Widgets are fully responsive. Automatically resizes the width of the columns so that they are the right size for each device.
 
 = How can I display Testimonials on my Website?  =
 
@@ -133,3 +131,10 @@ You can add an unlimited number of testimonials to your widget.
 * Change - Css, Widget star images
 =  1.4.6 =
 * Fix - Logo
+=  1.4.7 =
+* Fix - Show/hide logo functionality in both the editor and widget
+* Fix - Show/hide rating stars functionality in both the editor and widget
+* Fix - PHP 8.1 deprecation notices resolved
+* Fix - Company URL cutoff issue in the widget—URLs will no longer shorten to the top-level domain
+* Fix - "Read more" text is now translatable into supported languages (defaults to English if the language is not supported)
+* Fix - Unknown language settings will default to English

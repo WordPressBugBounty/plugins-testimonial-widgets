@@ -135,7 +135,7 @@ $permission = 'manage_options';
 $menu = $this->get_menu_data();
 foreach ($menu["menu"] as $k => $v) {
 add_submenu_page(
-$v["hide"] ? null : $menu["home_page"],
+$v["hide"] ? "" : $menu["home_page"],
 $v["title"],
 $k,
 $permission,
@@ -489,6 +489,9 @@ $allowed_html = array(
 );
 echo wp_kses($html, $allowed_html);
 }
+$current_locale = get_locale();
+$lang_code = substr($current_locale, 0, 2);
+$language = array_key_exists($lang_code, self::$widget_languages) ? $lang_code : 'en';
 $settings = array(
 'avatar_url' => 'https://cdn.trustindex.io/' . 'companies/default_avatar.jpg',
 'rating_number' => 3,
@@ -499,11 +502,11 @@ $settings = array(
 'date_format' => $widget['4']['appearance']['date_format'],
 'show_logos' => 0,
 'show_stars' => $widget['4']['appearance']['hide_stars'],
-'show_reviewers_photo' => !$widget['4']['appearance']['hide_image'],
+'show-review-images' => !$widget['4']['appearance']['hide_image'],
 'auto_height' => $widget['4']['appearance']['auto_height'],
 'slider_interval' => isset($widget['4']['navigation']['slider_interval']) ? $widget['4']['navigation']['slider_interval'] : 6,
 'no_rating_text' => 1,
-'language' => 'en',
+'language' => $language,
 );
 $need_to_parse = true;
 if ($only_preview) {
@@ -512,7 +515,7 @@ $settings['style_id'] = $default_style_id;
 $settings['set_id'] = $default_set_id;
 $settings['show_logos'] = 0;
 $settings['show_stars'] = 0;
-$settings['show_reviewers_photo'] = 1;
+$settings['show-review-images'] = 1;
 $settings['auto_height'] = 0;
 $settings['slider_interval'] = 6;
 }
@@ -528,9 +531,12 @@ $script_name = 'trustindex-js';
 if (!wp_script_is($script_name, 'enqueued')) {
 wp_enqueue_script($script_name, 'https://cdn.trustindex.io/' . 'loader.js', [], false, true);
 }
+$layout_id = '';
+if (!empty($w->review_content) && is_string($w->review_content)) {
 $start = strpos($w->review_content, 'data-layout-id="');
-$length = strpos($w->review_content, '" data-set-id') - $start;
-$layout_id = substr($w->review_content, $start, $length);
+$length = $start !== false ? strpos($w->review_content, '" data-set-id', $start) - $start : 0;
+$layout_id = $length > 0 ? substr($w->review_content, $start, $length) : '';
+}
 if ($content === false || empty($content) || $layout_id != $settings['style_id'] || (strpos($content, '<!-- R-LIST -->') === false && $need_to_parse)) {
 if (!$this->template_cache) {
 add_action('http_api_curl', function ($handle) {
@@ -552,8 +558,8 @@ $allowed_html = array(
 echo wp_kses($html, $allowed_html);
 die;
 }
- $response['body'] = preg_replace('/<!-- VERIFIED BY TRUSTINDEX START.*?VERIFIED BY TRUSTINDEX END -->/s', '', $response['body']);
- $response['body'] = str_replace('<img class=\"ti-platform-icon\" src=\"https:\/\/cdn.trustindex.io\/assets\/platform\/%platform%\/icon.svg\" alt=\"%platform%\" width=\"20\" height=\"20\" loading=\"lazy\" \/>', '', $response['body']);
+$response['body'] = preg_replace('/<!-- VERIFIED BY TRUSTINDEX START.*?VERIFIED BY TRUSTINDEX END -->/s', '', $response['body']);
+$response['body'] = preg_replace('/<img\s+class=\\\"ti-platform-icon\\\"[^\"]*src=\\\"[^\"]*\\\"[^\"]*alt=\\\"[^\"]*\\\"[^\"]*width=\\\"20\\\"[^\"]*height=\\\"20\\\"[^\"]*loading=\\\"lazy\\\"[^\"]*\/>/', '', $response['body']);
 $this->template_cache = json_decode($response['body'], true);
 }
 $content = $this->template_cache[$settings['style_id']];
@@ -581,6 +587,9 @@ $class_appends []= 'ti-no-logo';
 if ($settings['show_stars']) {
 $class_appends []= 'ti-no-stars';
 }
+if (!$settings['show-review-images']) {
+$class_appends []= 'ti-no-review-images';
+}
 if ($settings['auto_height']) {
 $class_appends []= 'ti-auto-height';
 }
@@ -599,7 +608,7 @@ $content = str_replace('class="ti-widget"', 'id="override-preset-'. $settings['s
 $inline_style = "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img img {
 width: 120px !important;
 height: 120px !important;
-border-radius: 60px;
+border-radius: 60px !important;
 }";
 if ($settings['style_id'] == 36 || $settings['style_id'] == 37 || $settings['style_id'] == 38)
 {
@@ -641,7 +650,7 @@ $content = str_replace('class="ti-widget"', 'id="override-preset-'. $settings['s
 $inline_style = "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img img {
 width: 100px !important;
 height: 100px !important;
-border-radius: 50px;
+border-radius: 50px !important;
 }
 #override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img {
 margin-left: -65px !important;
@@ -668,75 +677,73 @@ preg_match('/<!-- R-LIST -->(.*)<!-- R-LIST -->/', $array['content'], $matches);
 if (isset($matches[1])) {
 $reviewContent = "";
 if ($array['reviews'] && count($array['reviews'])) {
- foreach ($array['reviews'] as $r) {
- $date = "&nbsp;";
- if ($r['date'] && $r['date'] != '0000-00-00') {
- $date = str_replace(self::$widget_month_names['en'], self::$widget_month_names[$array['settings']['language']], date($array['settings']['date_format'], strtotime($r['date'])));
- }
- if ($r['company_website'])
- {
- $input = trim($r['company_website'], '/');
- if (!preg_match('#^http(s)?://#', $input)) {
- $input = 'http://' . $input;
- }
- $urlParts = parse_url($input);
- $domain = preg_replace('/^www\./', '', $urlParts['host']);
- if ($r['company_name'])
- {
- $info = '<a href="http://www.' . $domain . '" target="_blank">' . $r['company_name'] . '</a>';
- }
- else
- {
- $info = '<a href="http://www.' . $domain . '" target="_blank">' . $domain . '</a>';
- }
- }
- else if ($r['company_name'])
- {
- $info = $r['company_name'];
- }
- else
- {
- $info = $date;
- }
- $rating_content = $this->get_rating_stars($r['star_rating']);
- $platform_name = ucfirst($this->getShortName());
- if (!$array['settings']['show_reviewers_photo']) {
- if (in_array($array['settings']['style_id'], [45, 46, 47, 48]))
- {
- $matches[1] = str_replace('<div class="ti-profile-img-square"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
- }
- else
- {
- $matches[1] = str_replace('<div class="ti-profile-img"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
- }
- }
- if ($r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']])
- {
- $reviewer_photo = $r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']];
- }
- else
- {
- $reviewer_photo = 'https://cdn.trustindex.io/' . 'assets/default-avatar/noprofile-06.svg';
- }
- $reviewContent .= str_replace([
- '%platform%',
- '%reviewer_photo%',
- '%reviewer_name%',
- '%created_at%',
- '%text%',
- '<!-- STARS-CONTENT -->'
- ], [
- $platform_name,
- $reviewer_photo,
- $r['client_name'],
- $info,
- preg_replace('/\r\n|\r|\n/', "\n", html_entity_decode($r['content'], ENT_HTML5 | ENT_QUOTES)),
- $rating_content
- ], $matches[1]);
- $reviewContent = str_replace('<div></div>', '', $reviewContent);
- }
- $array['content'] = str_replace($matches[0], $reviewContent, $array['content']);
- }
+foreach ($array['reviews'] as $r) {
+$date = "&nbsp;";
+if ($r['date'] && $r['date'] != '0000-00-00') {
+$date = str_replace(self::$widget_month_names['en'], self::$widget_month_names[$array['settings']['language']], date($array['settings']['date_format'], strtotime($r['date'])));
+}
+if ($r['company_website'])
+{
+$input = trim($r['company_website'], '/');
+if (!preg_match('#^http(s)?://#', $input)) {
+$input = 'http://' . $input;
+}
+$urlParts = parse_url($input);
+if (isset($urlParts['host'])) {
+$scheme = isset($urlParts['scheme']) ? $urlParts['scheme'] . '://' : 'http://';
+$host = preg_replace('/^www\./', '', $urlParts['host']);
+$path = isset($urlParts['path']) ? $urlParts['path'] : '';
+$fullUrl = $scheme . $host . $path;
+if ($r['company_name']) {
+$info = '<a href="' . $fullUrl . '" target="_blank">' . $r['company_name'] . '</a>';
+} else {
+$info = '<a href="' . $fullUrl . '" target="_blank">' . $fullUrl . '</a>';
+}
+} else {
+$info = $r['company_name'] ?? $date;
+}
+} else {
+$info = $r['company_name'] ?? $date;
+}
+$rating_content = $this->get_rating_stars($r['star_rating']);
+$platform_name = ucfirst($this->getShortName());
+if (!$array['settings']['show-review-images']) {
+if (in_array($array['settings']['style_id'], [45, 46, 47, 48]))
+{
+$matches[1] = str_replace('<div class="ti-profile-img-square"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
+}
+else
+{
+$matches[1] = str_replace('<div class="ti-profile-img"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
+}
+}
+if ($r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']])
+{
+$reviewer_photo = $r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']];
+}
+else
+{
+$reviewer_photo = 'https://cdn.trustindex.io/' . 'assets/default-avatar/noprofile-06.svg';
+}
+$reviewContent .= str_replace([
+'%platform%',
+'%reviewer_photo%',
+'%reviewer_name%',
+'%created_at%',
+'%text%',
+'<!-- STARS-CONTENT -->'
+], [
+$platform_name,
+$reviewer_photo,
+$r['client_name'],
+$info,
+preg_replace('/\r\n|\r|\n/', "\n", html_entity_decode($r['content'], ENT_HTML5 | ENT_QUOTES)),
+$rating_content
+], $matches[1]);
+$reviewContent = str_replace('<div></div>', '', $reviewContent);
+}
+$array['content'] = str_replace($matches[0], $reviewContent, $array['content']);
+}
 }
 if ($array['settings']['no_rating_text']) {
 if (in_array($array['settings']['style_id'], [6, 7])) {
@@ -834,7 +841,7 @@ $text = "";
 if (!is_numeric($rating_score)) {
 return $text;
 }
- $fullStarUrl = '<img class="ti-star" src="https://cdn.trustindex.io/assets/platform/Google/star/f.svg" alt="Google" width="17" height="17" loading="lazy" />';
+$fullStarUrl = '<img class="ti-star" src="https://cdn.trustindex.io/assets/platform/Google/star/f.svg" alt="Google" width="17" height="17" loading="lazy" />';
 for ($si = 1; $si <= $rating_score; $si++) {
 $text .= $fullStarUrl;
 }
@@ -918,7 +925,9 @@ $this->update_widget_css($id, $server_output['css']);
 }
 private function get_additional_widget_style($id, $style_id)
 {
-$style = ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-stars .ti-review-item .ti-stars .ti-star.f{display: none;} ";
+$style = ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-review-images .ti-profile-img{display: none;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-stars .ti-stars .ti-star{display: none;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-stars .ti-review-item .ti-stars .ti-star.f{display: none;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-stars .ti-review-item .ti-stars .ti-star.e{display: none;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-stars .ti-review-item .ti-stars .ti-star.h{display: none;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . " .ti-widget-container .ti-review-item .ti-profile-details .ti-date a {text-decoration: none !important; font-size: 12px;} ";
@@ -952,6 +961,8 @@ else if ($style_id == 31)
 {
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content .ti-inner {max-height: unset !important; -webkit-line-clamp: unset !important;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-item .ti-read-more {display: none !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . " .ti-widget-container {margin: unset; display: block;max-width: 100%;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . " .ti-reviews-container-wrapper {overflow: hidden !important;} ";
 }
 else if ($style_id == 33)
 {
@@ -1093,39 +1104,39 @@ return self::get_custom_forms();
 foreach ($custom_forms as $form_id => $form_properties) {
 foreach ($form_properties['fields'] as $key => $form_field) {
 /*
- * Convert categories to category-selector.
- * @since 2.17.0
- */
+* Convert categories to category-selector.
+* @since 2.17.0
+*/
 if ('categories' == $form_field['input_type']) {
 $custom_forms[$form_id]['fields'][$key]['input_type'] = 'category-selector';
 }
 /*
- * Unset `show_default_options` for rating field. Going from 0 to 1.
- * @since 2.21.0
- */
+* Unset `show_default_options` for rating field. Going from 0 to 1.
+* @since 2.21.0
+*/
 if ('rating' == $form_field['input_type']) {
 unset($form_field['show_default_options']);
 }
 /*
- * Add `show_required_option` to shortcode field. Initial value is false.
- * @since 2.22.0
- */
+* Add `show_required_option` to shortcode field. Initial value is false.
+* @since 2.22.0
+*/
 if ('shortcode' == $form_field['input_type']) {
 $form_field['show_required_option'] = false;
 }
 /*
- * Add `show_default_options` to checkbox field.
- *
- * @since 2.27.0
- */
+* Add `show_default_options` to checkbox field.
+*
+* @since 2.27.0
+*/
 if ('checkbox' == $form_field['input_type']) {
 $form_field['show_default_options'] = 1;
 }
 /*
- * Merge in new default.
- * Custom fields are in display order (not associative) so we must find them by `input_type`.
- * @since 2.21.0 Using default fields instead of default form as source
- */
+* Merge in new default.
+* Custom fields are in display order (not associative) so we must find them by `input_type`.
+* @since 2.21.0 Using default fields instead of default form as source
+*/
 $new_default = array();
 $fields = get_option('wpttst_fields', array());
 foreach ($fields['field_types'] as $field_type_group_key => $field_type_group) {
@@ -1265,8 +1276,8 @@ public static function get_fields()
 $field_base = self::get_field_base();
 $field_types = array();
 /*
- * Assemble post field types
- */
+* Assemble post field types
+*/
 $field_types['post'] = array(
 'post_title' => array(
 'input_type' => 'text',
@@ -1305,8 +1316,8 @@ foreach ($field_types['post'] as $key => $array) {
 $field_types['post'][$key] = array_merge($field_base, $array);
 }
 /*
- * Assemble custom field types
- */
+* Assemble custom field types
+*/
 $field_types['custom'] = array(
 'text' => array(
 'input_type' => 'text',
@@ -1328,11 +1339,11 @@ foreach ($field_types['custom'] as $key => $array) {
 $field_types['custom'][$key] = array_merge($field_base, $array);
 }
 /*
- * Assemble special field types (FKA Optional)
- *
- * @since 1.18
- * @since 2.2.2 Fix bug caused by localizing 'categories'
- */
+* Assemble special field types (FKA Optional)
+*
+* @since 1.18
+* @since 2.2.2 Fix bug caused by localizing 'categories'
+*/
 $field_types['optional'] = array(
 'category-selector' => array(
 'input_type' => 'category-selector',
@@ -1371,14 +1382,14 @@ $field_types['optional'] = array(
 ),
 );
 /*
- * Merge each one onto base field
- */
+* Merge each one onto base field
+*/
 foreach ($field_types['optional'] as $key => $array) {
 $field_types['optional'][$key] = array_merge($field_base, $array);
 }
 /*
- * Assemble all fields
- */
+* Assemble all fields
+*/
 $default_fields = array(
 'field_base' => $field_base,
 'field_types' => $field_types,
@@ -1529,7 +1540,7 @@ array(
 ),
 31 =>
 array(
-'name' => 'Mansonry grid',
+'name' => 'Masonry grid',
 'type' => 'grid',
 'image' => 60,
 'generate' => false,
