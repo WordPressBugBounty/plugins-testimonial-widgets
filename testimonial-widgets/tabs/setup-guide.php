@@ -43,7 +43,7 @@ $visited_get_reviews = (get_option( 'wp-testimonials-visited-get-reviews') === '
 <div class="ti-icon">3</div>
 <div class="ti-details">
 <h2><?php echo TrustindexTestimonialsPlugin::___('Create testimonials widget with real customer reviews'); ?></h2>
-<p><?php echo TrustindexTestimonialsPlugin::___("Add reviews from %s and other platforms to your website. %s review platforms to choose from. Create an account and make your first widget.", [ 'Google, Facebook, Trustpilot, Airbnb, Booking, Tripadvisor', "133" ]); ?></p>
+<p><?php echo TrustindexTestimonialsPlugin::___("Add reviews from %s and other platforms to your website. %s review platforms to choose from. Create an account and make your first widget.", [ 'Google, Facebook, Trustpilot, Airbnb, Booking, Tripadvisor', "137" ]); ?></p>
 </div>
 </div>
 </a>

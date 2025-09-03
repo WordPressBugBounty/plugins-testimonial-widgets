@@ -580,6 +580,7 @@ if ($settings['slider_interval']) {
 $content = preg_replace('/data-pager-autoplay-timeout=[\'"][^\'"]*[\'"]/m', 'data-pager-autoplay-timeout="' . $settings['slider_interval'] . '"', $content);
 }
 $content = preg_replace('/data-set[_-]id=[\'"][^\'"]*[\'"]/m', 'data-set-id="' . $settings['set_id'] . '"', $content);
+$content = preg_replace('/class="\s*ti-widget\s*"/', 'class="ti-widget"', $content);
 $class_appends = ['ti-wp-testimonial-' . $w->id, 'ti-no-logo'];
 if ($settings['show_logos']) {
 $class_appends []= 'ti-no-logo';
