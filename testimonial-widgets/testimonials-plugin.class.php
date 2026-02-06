@@ -560,7 +560,15 @@ die;
 }
 $response['body'] = preg_replace('/<!-- VERIFIED BY TRUSTINDEX START.*?VERIFIED BY TRUSTINDEX END -->/s', '', $response['body']);
 $response['body'] = preg_replace('/<img\s+class=\\\"ti-platform-icon\\\"[^\"]*src=\\\"[^\"]*\\\"[^\"]*alt=\\\"[^\"]*\\\"[^\"]*width=\\\"20\\\"[^\"]*height=\\\"20\\\"[^\"]*loading=\\\"lazy\\\"[^\"]*\/>/', '', $response['body']);
-$this->template_cache = json_decode($response['body'], true);
+$data = json_decode($response['body'], true);
+foreach ($data as &$html) {
+$html = preg_replace(
+'/<div\s*class="ti-platform-icon\s+ti-with-tooltip"[^>]*>.*?<img[^>]*width="20"[^>]*height="20"[^>]*loading="lazy"[^>]*>\s*<\/div>/su',
+'',
+$html
+);
+}
+$this->template_cache = $data;
 }
 $content = $this->template_cache[$settings['style_id']];
 $this->update_widget_review_content($widget_id, $content);
@@ -3294,18 +3302,18 @@ array(
 ),
 'da' =>
 array(
-0 => 'Januar',
-1 => 'Februar',
-2 => 'Marts',
-3 => 'April',
-4 => 'Maj',
-5 => 'Juni',
-6 => 'Juli',
-7 => 'August',
-8 => 'September',
-9 => 'Oktober',
-10 => 'November',
-11 => 'December',
+0 => 'januar',
+1 => 'februar',
+2 => 'marts',
+3 => 'april',
+4 => 'maj',
+5 => 'juni',
+6 => 'juli',
+7 => 'august',
+8 => 'september',
+9 => 'oktober',
+10 => 'november',
+11 => 'december',
 ),
 'nl' =>
 array(
@@ -3369,18 +3377,18 @@ array(
 ),
 'el' =>
 array(
-0 => 'Iανουάριος',
-1 => 'Φεβρουάριος',
-2 => 'Μάρτιος',
-3 => 'Aρίλιος',
-4 => 'Μάιος',
-5 => 'Iούνιος',
-6 => 'Iούλιος',
-7 => 'Αύγουστος',
-8 => 'Σεπτέμβριος',
-9 => 'Oκτώβριος',
-10 => 'Νοέμβριος',
-11 => 'Δεκέμβριος',
+0 => 'Ιανουαρίου',
+1 => 'Φεβρουαρίου',
+2 => 'Μαρτίου',
+3 => 'Απριλίου',
+4 => 'Μαΐου',
+5 => 'Ιουνίου',
+6 => 'Ιουλίου',
+7 => 'Αυγούστου',
+8 => 'Σεπτεμβρίου',
+9 => 'Οκτωβρίου',
+10 => 'Νοεμβρίου',
+11 => 'Δεκεμβρίου',
 ),
 'he' =>
 array(

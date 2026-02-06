@@ -9,7 +9,7 @@ Author: Trustindex.io <support@trustindex.io>
 Author URI: https://www.trustindex.io/
 Contributors: trustindex
 License: GPLv2 or later
-Version: 1.4.8
+Version: 1.4.12
 Requires at least: 6.2
 Requires PHP: 7.0
 Text Domain: testimonial-widgets
@@ -21,7 +21,7 @@ Copyright 2021 Trustindex Kft (email: support@trustindex.io)
 */
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 require_once plugin_dir_path( __FILE__ ) . 'testimonials-plugin.class.php';
-$trustindex_testimonials_pm = new TrustindexTestimonialsPlugin("Testimonials", __FILE__, "1.4.8", "WP Testimonials");
+$trustindex_testimonials_pm = new TrustindexTestimonialsPlugin("Testimonials", __FILE__, "1.4.12", "WP Testimonials");
 add_action('admin_menu', array($trustindex_testimonials_pm, 'add_setting_menu'), 10);
 add_filter('parent_file', array($trustindex_testimonials_pm, 'menu_highlight'));
 add_filter('plugin_action_links', array($trustindex_testimonials_pm, 'add_plugin_action_links'), 10, 2);
