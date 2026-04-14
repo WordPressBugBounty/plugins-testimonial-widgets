@@ -2,8 +2,8 @@
 Contributors: trustindex
 Donate link: https://www.trustindex.io/prices/
 Tags: reviews, ratings, recommendations, testimonials, widget, slider, review, rating, recommendation, testimonial, customer review
-Tested up to: 6.9
-Stable tag: 1.4.12
+Tested up to: 7.0
+Stable tag: 1.4.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Plugin Name: WP Testimonials
@@ -12,7 +12,7 @@ Plugin URI: https://wordpress.org/plugins/testimonial-widgets/
 Author: Trustindex.io <support@trustindex.io>
 Author URI: https://www.trustindex.io/
 Text Domain: testimonial-widgets
-Version: 1.4.12
+Version: 1.4.13
 
 Display your Testimonials on your website fast and easily. 21 widget types, 25 widget styles available. (Free Plugin)
 
