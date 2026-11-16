@@ -1,17 +1,17 @@
 <?php
 class TrustindexTestimonialsPlugin
 {
-private $plugin_file_path;
-private $plugin_name;
-private $platform_name;
+private $pluginFilePath;
+private $pluginName;
+private $platformName;
 public $shortname;
 private $version;
-public function __construct($shortname, $plugin_file_path, $version, $plugin_name)
+public function __construct($shortname, $pluginFilePath, $version, $pluginName)
 {
 $this->shortname = $shortname;
-$this->plugin_file_path = $plugin_file_path;
+$this->pluginFilePath = $pluginFilePath;
 $this->version = $version;
-$this->plugin_name = $plugin_name;
+$this->pluginName = $pluginName;
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 require_once plugin_dir_path(__FILE__) . 'functions.php';
 require_once plugin_dir_path(__FILE__) . 'functions-rating.php';
@@ -22,32 +22,32 @@ public function getShortName()
 {
 return $this->shortname;
 }
-public function get_plugin_dir()
+public function getPluginDir()
 {
-return plugin_dir_path($this->plugin_file_path);
+return plugin_dir_path($this->pluginFilePath);
 }
-public function get_plugin_file_url($file, $add_versioning = true)
+public function getPluginFileUrl($file, $addVersioning = true)
 {
-$url = plugins_url($file, $this->plugin_file_path);
-if ($add_versioning) {
-$append_mark = strpos($url, "?") === FALSE ? "?" : "&";
-$url .= $append_mark . 'ver=' . $this->version;
+$url = plugins_url($file, $this->pluginFilePath);
+if ($addVersioning) {
+$appendMark = strpos($url, "?") === FALSE ? "?" : "&";
+$url .= $appendMark . 'ver=' . $this->version;
 }
 return $url;
 }
-public function get_plugin_slug()
+public function getPluginSlug()
 {
-return basename($this->get_plugin_dir());
+return basename($this->getPluginDir());
 }
-public function get_full_star()
+public function getFullStar()
 {
-return $this->get_plugin_file_url('static/svg/f.svg');
+return $this->getPluginFileUrl('static/svg/f.svg');
 }
-public function get_empty_star()
+public function getEmptyStar()
 {
-return $this->get_plugin_file_url('static/svg/e.svg');
+return $this->getPluginFileUrl('static/svg/e.svg');
 }
-public static $thumbnail_sizes = array(
+public static $thumbnailSizes = array(
 60,
 80,
 100,
@@ -59,80 +59,80 @@ public static $thumbnail_sizes = array(
 460,
 554
 );
-public function set_testimonial_image()
+public function setTestimonialImage()
 {
 add_theme_support( 'post-thumbnails');
-foreach (TrustindexTestimonialsPlugin::$thumbnail_sizes as $thumbnail_size)
+foreach (TrustindexTestimonialsPlugin::$thumbnailSizes as $thumbnailSize)
 {
-add_image_size('wpt-testimonial-thumbnail-' . $thumbnail_size, $thumbnail_size, $thumbnail_size, true);
+add_image_size('wpt-testimonial-thumbnail-' . $thumbnailSize, $thumbnailSize, $thumbnailSize, true);
 }
 }
 
-public function get_menu_data()
+public function getMenuData()
 {
-$menu_data = array(
+$menuData = array(
 "menu" => array(
-TrustindexTestimonialsPlugin::___('Setup Guide') => array(
-"url" => $this->get_plugin_slug() . "/tabs/setup-guide.php",
+__('Setup Guide', 'testimonial-widgets') => array(
+"url" => $this->getPluginSlug() . "/tabs/setup-guide.php",
 "name" => "setup-guide",
 "title" => "WP Testimonials - Setup Guide",
 "is_custom" => true,
 "hide" => false,
 ),
-TrustindexTestimonialsPlugin::___('My Testimonials') => array(
+__('My Testimonials', 'testimonial-widgets') => array(
 "url" => "edit.php?post_type=wpt-testimonial",
 "title" => "WP Testimonials - My Testimonials",
 "name" => "my-reviews",
 "is_custom" => false,
 "hide" => false,
 ),
-TrustindexTestimonialsPlugin::___('Create Widgets') => array(
-"url" => $this->get_plugin_slug() . "/tabs/index-widget.php",
+__('Create Widgets', 'testimonial-widgets') => array(
+"url" => $this->getPluginSlug() . "/tabs/index-widget.php",
 "title" => "WP Testimonials - Create Widgets",
 "name" => "index-widget",
 "is_custom" => true,
 "hide" => false,
 ),
-TrustindexTestimonialsPlugin::___('hidden Create Widget') => array(
-"url" => $this->get_plugin_slug() . "/tabs/create-widget.php",
+__('hidden Create Widget', 'testimonial-widgets') => array(
+"url" => $this->getPluginSlug() . "/tabs/create-widget.php",
 "title" => "WP Testimonials - Create Widgets",
 "name" => "create-widget",
 "is_custom" => true,
 "hide" => true,
 "parent" => "index-widget",
 ),
-TrustindexTestimonialsPlugin::___('Categories') => array(
+__('Categories', 'testimonial-widgets') => array(
 "url" => "edit-tags.php?taxonomy=wpt-testimonial-category&post_type=wpt-testimonial",
 "name" => "categories",
 "title" => "WP Testimonials - Categories",
 "is_custom" => false,
 "hide" => false,
 ),
-TrustindexTestimonialsPlugin::___('Rate Us') => array(
-"url" => $this->get_plugin_slug() . "/tabs/rate-us.php",
+__('Rate Us', 'testimonial-widgets') => array(
+"url" => $this->getPluginSlug() . "/tabs/rate-us.php",
 "name" => "rate-us",
 "title" => "WP Testimonials - Rate Us",
 "is_custom" => true,
 "hide" => false,
 )
 ),
-"home_page" => $this->get_plugin_slug() . "/tabs/setup-guide.php",
-"default_tab" => $this->get_plugin_slug() . "/tabs/setup-guide.php",
+"home_page" => $this->getPluginSlug() . "/tabs/setup-guide.php",
+"default_tab" => $this->getPluginSlug() . "/tabs/setup-guide.php",
 );
-return $menu_data;
+return $menuData;
 }
-public function add_setting_menu()
+public function addSettingMenu()
 {
 add_menu_page(
-$this->plugin_name,
-$this->plugin_name,
+$this->pluginName,
+$this->pluginName,
 'manage_options',
-$this->get_plugin_slug() . "/tabs/setup-guide.php",
+$this->getPluginSlug() . "/tabs/setup-guide.php",
 '',
-$this->get_plugin_file_url('static/img/trustindex-sign-logo.png')
+$this->getPluginFileUrl('static/img/trustindex-sign-logo.png')
 );
 $permission = 'manage_options';
-$menu = $this->get_menu_data();
+$menu = $this->getMenuData();
 foreach ($menu["menu"] as $k => $v) {
 add_submenu_page(
 $v["hide"] ? "" : $menu["home_page"],
@@ -143,7 +143,7 @@ $v["url"]
 );
 }
 }
-public function menu_highlight($parent_file)
+public function menuHighlight($parentFile)
 {
 global $plugin_page, $submenu_file, $post_type, $taxonomy, $pagenow;
 if ('wpt-testimonial' == $post_type) {
@@ -156,44 +156,44 @@ else if ($pagenow === 'post.php' || $pagenow === 'post-new.php')
 $plugin_page = 'edit.php?post_type=wpt-testimonial';
 $submenu_file = 'edit.php?post_type=wpt-testimonial';
 }
-else if (isset($_GET['page']))
+else if (isset($plugin_page))
 {
-$page = sanitize_text_field($_GET['page']);
-$selected_tab = substr($page, strrpos($page, '/') + 1);
-$selected_tab = str_replace(".php", "", $selected_tab);
-if ($selected_tab === 'create-widget')
+$page = sanitize_text_field($plugin_page);
+$selectedTab = substr($page, strrpos($page, '/') + 1);
+$selectedTab = str_replace(".php", "", $selectedTab);
+if ($selectedTab === 'create-widget')
 {
-$plugin_page = $this->get_plugin_slug() . "/tabs/index-widget.php";
-$submenu_file = $this->get_plugin_slug() . "/tabs/index-widget.php";
+$plugin_page = $this->getPluginSlug() . "/tabs/index-widget.php";
+$submenu_file = $this->getPluginSlug() . "/tabs/index-widget.php";
 }
 }
 }
-return $parent_file;
+return $parentFile;
 }
-public function generate_cpt_page_menu()
+public function generateCptPageMenu()
 {
 $screen = get_current_screen();
 if ('edit-wpt-testimonial' === $screen->id || 'wpt-testimonial' === $screen->id)
 {
 add_action( 'all_admin_notices', function(){
-$menu = $this->get_menu_data();
-$selected_tab = 'my-reviews';
+$menu = $this->getMenuData();
+$selectedTab = 'my-reviews';
 ob_start(); ?>
 <div id="testimonial-widgets-plugin-settings-page" class="ti-toggle-opacity">
 <h1 class="ti-free-title">
-<?php echo esc_attr($this->plugin_name); ?>
-<a href="https://www.trustindex.io" target="_blank" title="Trustindex" class="ti-pull-right"><img src="<?php echo esc_url($this->get_plugin_file_url('static/img/trustindex.svg')); ?>" /></a>
+<?php echo esc_attr($this->pluginName); ?>
+<a href="https://www.trustindex.io" target="_blank" title="Trustindex" class="ti-pull-right"><img src="<?php echo esc_url($this->getPluginFileUrl('static/img/trustindex.svg')); ?>" /></a>
 </h1>
 <div class="container_wrapper">
 <div class="container_cell" id="container-main">
 <div class="nav-tab-wrapper">
-<?php foreach ($menu["menu"] as $tab_name => $tab) : ?>
-<?php $is_active = $selected_tab == $tab["name"];
+<?php foreach ($menu["menu"] as $tabName => $tab) : ?>
+<?php $isActive = $selectedTab == $tab["name"];
 $action = $tab["name"];
-$is_right = $tab["name"] == "rate-us";
+$isRight = $tab["name"] == "rate-us";
 ?>
 <?php if ($tab["hide"] == false) : ?>
-<a id="link-tab-<?php echo esc_attr($action); ?>" class="nav-tab<?php if ($is_active) : ?> nav-tab-active<?php endif; ?> <?php if ($is_right) : ?> nav-tab-right<?php endif; ?>" href="<?php echo $tab["is_custom"] ? admin_url('admin.php?page=' . $tab["url"]) : $tab["url"]; ?>"><?php echo esc_html($tab_name); ?></a>
+<a id="link-tab-<?php echo esc_attr($action); ?>" class="nav-tab<?php if ($isActive) : ?> nav-tab-active<?php endif; ?> <?php if ($isRight) : ?> nav-tab-right<?php endif; ?>" href="<?php echo esc_url($tab["is_custom"] ? admin_url('admin.php?page=' . $tab["url"]) : $tab["url"]); ?>"><?php echo esc_html($tabName); ?></a>
 <?php endif; ?>
 <?php endforeach; ?>
 </div>
@@ -203,7 +203,7 @@ $is_right = $tab["name"] == "rate-us";
 <?php
 $html = ob_get_contents();
 ob_end_clean();
-$allowed_html = array(
+$allowedHtml = array(
 'div' => array(
 'id' => array(),
 'class' => array()
@@ -220,30 +220,30 @@ $allowed_html = array(
 'src' => array()
 )
 );
-echo wp_kses($html, $allowed_html);
+echo wp_kses($html, $allowedHtml);
 });
 }
 else if ('edit-wpt-testimonial-category' === $screen->id)
 {
 add_action( 'all_admin_notices', function(){
-$menu = $this->get_menu_data();
-$selected_tab = 'categories';
+$menu = $this->getMenuData();
+$selectedTab = 'categories';
 ob_start(); ?>
 <div id="testimonial-widgets-plugin-settings-page" class="ti-toggle-opacity">
 <h1 class="ti-free-title">
-<?php echo esc_attr($this->plugin_name); ?>
-<a href="https://www.trustindex.io" target="_blank" title="Trustindex" class="ti-pull-right"><img src="<?php echo esc_url($this->get_plugin_file_url('static/img/trustindex.svg')); ?>" /></a>
+<?php echo esc_attr($this->pluginName); ?>
+<a href="https://www.trustindex.io" target="_blank" title="Trustindex" class="ti-pull-right"><img src="<?php echo esc_url($this->getPluginFileUrl('static/img/trustindex.svg')); ?>" /></a>
 </h1>
 <div class="container_wrapper">
 <div class="container_cell" id="container-main">
 <div class="nav-tab-wrapper">
-<?php foreach ($menu["menu"] as $tab_name => $tab) : ?>
-<?php $is_active = $selected_tab == $tab["name"];
+<?php foreach ($menu["menu"] as $tabName => $tab) : ?>
+<?php $isActive = $selectedTab == $tab["name"];
 $action = $tab["name"];
-$is_right = $tab["name"] == "rate-us";
+$isRight = $tab["name"] == "rate-us";
 ?>
 <?php if ($tab["hide"] == false) : ?>
-<a id="link-tab-<?php echo esc_attr($action); ?>" class="nav-tab<?php if ($is_active) : ?> nav-tab-active<?php endif; ?> <?php if ($is_right) : ?> nav-tab-right<?php endif; ?>" href="<?php echo $tab["is_custom"] ? admin_url('admin.php?page=' . $tab["url"]) : $tab["url"]; ?>"><?php echo esc_html($tab_name); ?></a>
+<a id="link-tab-<?php echo esc_attr($action); ?>" class="nav-tab<?php if ($isActive) : ?> nav-tab-active<?php endif; ?> <?php if ($isRight) : ?> nav-tab-right<?php endif; ?>" href="<?php echo esc_url($tab["is_custom"] ? admin_url('admin.php?page=' . $tab["url"]) : $tab["url"]); ?>"><?php echo esc_html($tabName); ?></a>
 <?php endif; ?>
 <?php endforeach; ?>
 </div>
@@ -253,7 +253,7 @@ $is_right = $tab["name"] == "rate-us";
 <?php
 $html = ob_get_contents();
 ob_end_clean();
-$allowed_html = array(
+$allowedHtml = array(
 'div' => array(
 'id' => array(),
 'class' => array()
@@ -270,49 +270,49 @@ $allowed_html = array(
 'src' => array()
 )
 );
-echo wp_kses($html, $allowed_html);
+echo wp_kses($html, $allowedHtml);
 });
 }
 }
-public function generate_page_menu()
+public function generatePageMenu()
 {
-$menu = $this->get_menu_data();
-$default_tab = $menu['default_tab'];
-$page = sanitize_text_field($_GET['page']);
-$selected_tab = substr($page, strrpos($page, '/') + 1);
-$selected_tab = str_replace(".php", "", $selected_tab);
+$menu = $this->getMenuData();
+$defaultTab = $menu['default_tab'];
+$page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+$selectedTab = substr($page, strrpos($page, '/') + 1);
+$selectedTab = str_replace(".php", "", $selectedTab);
 $found = false;
 foreach ($menu["menu"] as $tab) {
-if ($tab["hide"] && $selected_tab == $tab["name"]) {
-$selected_tab = $tab["parent"];
+if ($tab["hide"] && $selectedTab == $tab["name"]) {
+$selectedTab = $tab["parent"];
 $found = true;
 break;
 }
-if ($selected_tab == $tab["name"]) {
+if ($selectedTab == $tab["name"]) {
 $found = true;
 break;
 }
 }
 if (!$found) {
-$selected_tab = $default_tab;
+$selectedTab = $defaultTab;
 }
 ob_start(); ?>
 <div class="nav-tab-wrapper">
-<?php foreach ($menu["menu"] as $tab_name => $tab) : ?>
+<?php foreach ($menu["menu"] as $tabName => $tab) : ?>
 <?php
-$is_active = $selected_tab == $tab["name"];
-$is_right = $tab["name"] == "rate-us";
+$isActive = $selectedTab == $tab["name"];
+$isRight = $tab["name"] == "rate-us";
 $action = $tab["name"];
 ?>
 <?php if ($tab["hide"] == false) : ?>
-<a id="link-tab-<?php echo esc_attr($action); ?>" class="nav-tab<?php if ($is_active) : ?> nav-tab-active<?php endif; ?> <?php if ($is_right) : ?> nav-tab-right<?php endif; ?>" href="<?php echo $tab["is_custom"] ? admin_url('admin.php?page=' . $tab["url"]) : $tab["url"]; ?>"><?php echo esc_html($tab_name); ?></a>
+<a id="link-tab-<?php echo esc_attr($action); ?>" class="nav-tab<?php if ($isActive) : ?> nav-tab-active<?php endif; ?> <?php if ($isRight) : ?> nav-tab-right<?php endif; ?>" href="<?php echo esc_url($tab["is_custom"] ? admin_url('admin.php?page=' . $tab["url"]) : $tab["url"]); ?>"><?php echo esc_html($tabName); ?></a>
 <?php endif; ?>
 <?php endforeach; ?>
 </div>
 <?php
 $html = ob_get_contents();
 ob_end_clean();
-$allowed_html = array(
+$allowedHtml = array(
 'div' => array(
 'id' => array(),
 'class' => array()
@@ -329,24 +329,24 @@ $allowed_html = array(
 'src' => array()
 )
 );
-echo wp_kses($html, $allowed_html);
+echo wp_kses($html, $allowedHtml);
 }
 
-public function add_plugin_action_links($links, $file)
+public function addPluginActionLinks($links, $file)
 {
-$plugin_file = basename($this->plugin_file_path);
-if (basename($file) == $plugin_file) {
-$new_item2 = '<a target="_blank" href="https://www.trustindex.io" target="_blank">by <span style="background-color: #4067af; color: white; font-weight: bold; padding: 1px 8px;">Trustindex.io</span></a>';
-$new_item1 = '<a href="' . admin_url('admin.php?page=' . $this->get_plugin_slug() . '/tabs/setup-guide.php') . '">' . TrustindexTestimonialsPlugin::___('Settings') . '</a>';
-array_unshift($links, $new_item2, $new_item1);
+$pluginFile = basename($this->pluginFilePath);
+if (basename($file) == $pluginFile) {
+$newItem2 = '<a target="_blank" href="https://www.trustindex.io" target="_blank">by <span style="background-color: #4067af; color: white; font-weight: bold; padding: 1px 8px;">Trustindex.io</span></a>';
+$newItem1 = '<a href="' . admin_url('admin.php?page=' . $this->getPluginSlug() . '/tabs/setup-guide.php') . '">' . __('Settings', 'testimonial-widgets') . '</a>';
+array_unshift($links, $newItem2, $newItem1);
 }
 return $links;
 }
-public function add_plugin_meta_links($meta, $file)
+public function addPluginMetaLinks($meta, $file)
 {
-$plugin_file = basename($this->plugin_file_path);
-if (basename($file) == $plugin_file) {
-$meta[] = "<a href='http://wordpress.org/support/view/plugin-reviews/" . $this->get_plugin_slug() . "' target='_blank' rel='noopener noreferrer' title='" . TrustindexTestimonialsPlugin::___('Rate our plugin') . ': ' . $this->plugin_name . "'>" . TrustindexTestimonialsPlugin::___('Rate our plugin') . '</a>';
+$pluginFile = basename($this->pluginFilePath);
+if (basename($file) == $pluginFile) {
+$meta[] = "<a href='http://wordpress.org/support/view/plugin-reviews/" . $this->getPluginSlug() . "' target='_blank' rel='noopener noreferrer' title='" . __('Rate our plugin', 'testimonial-widgets') . ': ' . $this->pluginName . "'>" . __('Rate our plugin', 'testimonial-widgets') . '</a>';
 }
 return $meta;
 }
@@ -356,109 +356,101 @@ return $meta;
 */
 public function loadI18N()
 {
-load_plugin_textdomain('testimonial-widgets', false, $this->get_plugin_slug() . '/languages');
-}
-public static function ___($text, $params = null)
-{
-if (!is_array($params)) {
-$params = func_get_args();
-$params = array_slice($params, 1);
-}
-return vsprintf(__($text, 'testimonial-widgets'), $params);
+load_plugin_textdomain('testimonial-widgets', false, $this->getPluginSlug() . '/languages');
 }
 
-public function trustindex_testimonials_add_scripts($hook)
+public function trustindexTestimonialsAddScripts($hook)
 {
-$wp_page = false;
-$post_type = isset($_GET['post_type']) ? sanitize_text_field($_GET['post_type']) : null;
-$taxonomy = isset($_GET['taxonomy']) ? sanitize_text_field($_GET['taxonomy']) : null;
-$page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : null;
+$wpPage = false;
+$postType = isset($_GET['post_type']) ? sanitize_text_field(wp_unslash($_GET['post_type'])) : null;
+$taxonomy = isset($_GET['taxonomy']) ? sanitize_text_field(wp_unslash($_GET['taxonomy'])) : null;
+$page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : null;
 global $pagenow;
 if ($pagenow === 'post.php' || $pagenow === 'post-new.php' || $pagenow === 'edit.php' || $pagenow === 'edit-tags.php' || $pagenow === 'term.php')
 {
-if (file_exists($this->get_plugin_dir() . 'static/js/admin-testimonial-edit.js')) {
-wp_enqueue_script('trustindex_testimonials_edit_script' . $this->shortname, $this->get_plugin_file_url('static/js/admin-testimonial-edit.js'));
+if (file_exists($this->getPluginDir() . 'static/js/admin-testimonial-edit.js')) {
+wp_enqueue_script('trustindex_testimonials_edit_script' . $this->shortname, $this->getPluginFileUrl('static/js/admin-testimonial-edit.js'), [], $this->version, false);
 }
 }
-if ($post_type && $post_type == "wpt-testimonial") {
+if ($postType && $postType == "wpt-testimonial") {
 if ($pagenow === 'post-new.php' || $pagenow === 'post.php')
 {
-if (file_exists($this->get_plugin_dir() . 'static/css/admin-page-menu-for-post.css')) {
-wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname, $this->get_plugin_file_url('static/css/admin-page-menu-for-post.css'));
+if (file_exists($this->getPluginDir() . 'static/css/admin-page-menu-for-post.css')) {
+wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname, $this->getPluginFileUrl('static/css/admin-page-menu-for-post.css'), [], $this->version);
 }
 }
 else if ($pagenow === 'edit.php')
 {
-$wp_page = true;
-if (file_exists($this->get_plugin_dir() . 'static/js/admin-testimonial-index.js')) {
-wp_enqueue_script('trustindex_testimonials_index_script' . $this->shortname, $this->get_plugin_file_url('static/js/admin-testimonial-index.js'));
+$wpPage = true;
+if (file_exists($this->getPluginDir() . 'static/js/admin-testimonial-index.js')) {
+wp_enqueue_script('trustindex_testimonials_index_script' . $this->shortname, $this->getPluginFileUrl('static/js/admin-testimonial-index.js'), [], $this->version, false);
 }
-if (file_exists($this->get_plugin_dir() . 'static/css/admin-page-default-wp-settings.css')) {
-wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname . '_default_wp', $this->get_plugin_file_url('static/css/admin-page-default-wp-settings.css'));
+if (file_exists($this->getPluginDir() . 'static/css/admin-page-default-wp-settings.css')) {
+wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname . '_default_wp', $this->getPluginFileUrl('static/css/admin-page-default-wp-settings.css'), [], $this->version);
 }
 }
 else if ($taxonomy && (($pagenow === 'edit-tags.php' && $taxonomy === "wpt-testimonial-category") || ($pagenow === 'term.php' && $taxonomy === "wpt-testimonial-category")))
 {
-$wp_page = true;
-if (file_exists($this->get_plugin_dir() . 'static/css/admin-page-default-wp-settings.css')) {
-wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname . '_default_wp', $this->get_plugin_file_url('static/css/admin-page-default-wp-settings.css'));
+$wpPage = true;
+if (file_exists($this->getPluginDir() . 'static/css/admin-page-default-wp-settings.css')) {
+wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname . '_default_wp', $this->getPluginFileUrl('static/css/admin-page-default-wp-settings.css'), [], $this->version);
 }
 }
 }
 else if ($pagenow === 'post.php') {
-if (file_exists($this->get_plugin_dir() . 'static/css/admin-page-menu-for-post.css')) {
-wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname, $this->get_plugin_file_url('static/css/admin-page-menu-for-post.css'));
+if (file_exists($this->getPluginDir() . 'static/css/admin-page-menu-for-post.css')) {
+wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname, $this->getPluginFileUrl('static/css/admin-page-menu-for-post.css'), [], $this->version);
 }
 }
-if ($wp_page == false)
+if ($wpPage == false)
 {
-$tmp = explode('/', $this->plugin_file_path);
-$plugin_slug = preg_replace('/\.php$/', '', array_pop($tmp));
+$tmp = explode('/', $this->pluginFilePath);
+$pluginSlug = preg_replace('/\.php$/', '', array_pop($tmp));
 $tmp = explode('/', $hook);
-$current_slug = array_shift($tmp);
+$currentSlug = array_shift($tmp);
 }
-if ($wp_page || $plugin_slug == $current_slug) {
-if (file_exists($this->get_plugin_dir() . 'static/css/admin-page-settings.css')) {
-wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname, $this->get_plugin_file_url('static/css/admin-page-settings.css'));
+if ($wpPage || $pluginSlug == $currentSlug) {
+if (file_exists($this->getPluginDir() . 'static/css/admin-page-settings.css')) {
+wp_enqueue_style('trustindex_testimonials_settings_style_' . $this->shortname, $this->getPluginFileUrl('static/css/admin-page-settings.css'), [], $this->version);
 }
-if (file_exists($this->get_plugin_dir() . 'static/js/admin-page-settings-common.js')) {
-wp_enqueue_script('trustindex_testimonials_settings_script_common_' . $this->shortname, $this->get_plugin_file_url('static/js/admin-page-settings-common.js'));
+if (file_exists($this->getPluginDir() . 'static/js/admin-page-settings-common.js')) {
+wp_enqueue_script('trustindex_testimonials_settings_script_common_' . $this->shortname, $this->getPluginFileUrl('static/js/admin-page-settings-common.js'), [], $this->version, false);
 }
 }
 if ($page)
 {
-$selected_tab = substr($page, strrpos($page, '/') + 1);
-$selected_tab = str_replace(".php", "", $selected_tab);
-if ($selected_tab === 'create-widget')
+$selectedTab = substr($page, strrpos($page, '/') + 1);
+$selectedTab = str_replace(".php", "", $selectedTab);
+if ($selectedTab === 'create-widget')
 {
-if (file_exists($this->get_plugin_dir() . 'static/js/admin-page-create-widget.js')) {
-wp_enqueue_script('trustindex_testimonials_create_widget_script_' . $this->shortname, $this->get_plugin_file_url('static/js/admin-page-create-widget.js'));
+if (file_exists($this->getPluginDir() . 'static/js/admin-page-create-widget.js')) {
+wp_enqueue_script('trustindex_testimonials_create_widget_script_' . $this->shortname, $this->getPluginFileUrl('static/js/admin-page-create-widget.js'), [], $this->version, false);
 }
 }
-if ($selected_tab === 'setup-guide')
+if ($selectedTab === 'setup-guide')
 {
-if (file_exists($this->get_plugin_dir() . 'static/css/setup-guide.css')) {
-wp_enqueue_style('trustindex_testimonials_setup-guide_style_' . $this->shortname, $this->get_plugin_file_url('static/css/setup-guide.css'));
+if (file_exists($this->getPluginDir() . 'static/css/setup-guide.css')) {
+wp_enqueue_style('trustindex_testimonials_setup-guide_style_' . $this->shortname, $this->getPluginFileUrl('static/css/setup-guide.css'), [], $this->version);
 }
 }
 }
 
-wp_register_style('wpttst-post-editor', $this->get_plugin_file_url('static/css/post-editor.css'));
+wp_register_style('wpttst-post-editor', $this->getPluginFileUrl('static/css/post-editor.css'), [], $this->version);
 wp_enqueue_style('wpttst-post-editor');
 
-wp_register_style('wpttst-rating-display', $this->get_plugin_file_url('static/css/rating-display.css'));
-wp_register_style('wpttst-rating-form', $this->get_plugin_file_url('static/css/rating-form.css'));
-wp_register_script('wpttst-rating-script', $this->get_plugin_file_url('static/js/rating-edit.js'), array('jquery'), null, true);
+wp_register_style('wpttst-rating-display', $this->getPluginFileUrl('static/css/rating-display.css'), [], $this->version);
+wp_register_style('wpttst-rating-form', $this->getPluginFileUrl('static/css/rating-form.css'), [], $this->version);
+wp_register_script('wpttst-rating-script', $this->getPluginFileUrl('static/js/rating-edit.js'), array('jquery'), $this->version, true);
 wp_enqueue_style('wpttst-rating-form');
 wp_enqueue_style('wpttst-rating-display');
 wp_enqueue_script('wpttst-rating-script');
 }
 
-private $preview_content = null;
-private $template_cache = null;
-public function get_noreg_list_reviews(int $widget_id, $list_all = false, $default_style_id = 4, $default_set_id = 'light-background', $only_preview = false)
+private $previewContent = null;
+private $templateCache = null;
+public function getNoregListReviews(int $widgetId, $listAll = false, $defaultStyleId = 4, $defaultSetId = 'light-background', $onlyPreview = false)
 {
-$w = $this->get_widget($widget_id);
+$w = $this->getWidget($widgetId);
 $content = $w->review_content;
 $widget = unserialize($w->value);
 $filter = array();
@@ -474,11 +466,11 @@ $filter['ids'] = explode(',', $widget['1']['selected']);
 $filter['rating'] = 'all';
 }
 $filter['order'] = $widget['4']['general']['order'];
-$reviews = $this->get_reviews($filter);
+$reviews = $this->getReviews($filter);
 if (count($reviews) == 0)
 {
-$html = $this->get_alertbox('warning', '<br />' . TrustindexTestimonialsPlugin::___('You do not have reviews with the current filters. <br /> Change your filters if you would like to display reviews on your page!'));
-$allowed_html = array(
+$html = $this->getAlertbox('warning', '<br />' . __('You do not have reviews with the current filters. <br /> Change your filters if you would like to display reviews on your page!', 'testimonial-widgets'));
+$allowedHtml = array(
 'div' => array(
 'style' => array()
 ),
@@ -487,17 +479,15 @@ $allowed_html = array(
 ),
 'br' => array()
 );
-echo wp_kses($html, $allowed_html);
+echo wp_kses($html, $allowedHtml);
 }
-$current_locale = get_locale();
-$lang_code = substr($current_locale, 0, 2);
-$language = array_key_exists($lang_code, self::$widget_languages) ? $lang_code : 'en';
+$language = self::getWidgetLanguage(get_locale());
 $settings = array(
 'avatar_url' => 'https://cdn.trustindex.io/' . 'companies/default_avatar.jpg',
 'rating_number' => 3,
-'rating_score' => rand(4, 5),
-'style_id' => isset($widget['2']) ? $widget['2'] : $default_style_id,
-'set_id' => isset($widget['3']) ? $widget['3'] : $default_set_id,
+'rating_score' => wp_rand(4, 5),
+'style_id' => isset($widget['2']) ? $widget['2'] : $defaultStyleId,
+'set_id' => isset($widget['3']) ? $widget['3'] : $defaultSetId,
 'display_type' => $widget['4']['appearance']['display_type'],
 'date_format' => $widget['4']['appearance']['date_format'],
 'show_logos' => 0,
@@ -508,11 +498,11 @@ $settings = array(
 'no_rating_text' => 1,
 'language' => $language,
 );
-$need_to_parse = true;
-if ($only_preview) {
+$needToParse = true;
+if ($onlyPreview) {
 $content = false;
-$settings['style_id'] = $default_style_id;
-$settings['set_id'] = $default_set_id;
+$settings['style_id'] = $defaultStyleId;
+$settings['set_id'] = $defaultSetId;
 $settings['show_logos'] = 0;
 $settings['show_stars'] = 0;
 $settings['show-review-images'] = 1;
@@ -522,31 +512,27 @@ $settings['slider_interval'] = 6;
 if (is_null($settings['no_rating_text']))
 {
 $settings['no_rating_text'] = in_array($settings['style_id'], [ 15, 19, 36, 38, 39, 44 ]) ? 1 : 0;
-if(self::$widget_styles[$settings['set_id']]['_vars']['dots'] === 'true')
+if(self::$widgetStyles[$settings['set_id']]['_vars']['dots'] === 'true')
 {
 $settings['no_rating_text'] = 1;
 }
 }
-$script_name = 'trustindex-js';
-if (!wp_script_is($script_name, 'enqueued')) {
-wp_enqueue_script($script_name, 'https://cdn.trustindex.io/' . 'loader.js', [], false, true);
+$scriptName = 'trustindex-js';
+if (!wp_script_is($scriptName, 'enqueued')) {
+wp_enqueue_script($scriptName, 'https://cdn.trustindex.io/' . 'loader.js', [], $this->version, true);
 }
-$layout_id = '';
+$layoutId = '';
 if (!empty($w->review_content) && is_string($w->review_content)) {
 $start = strpos($w->review_content, 'data-layout-id="');
 $length = $start !== false ? strpos($w->review_content, '" data-set-id', $start) - $start : 0;
-$layout_id = $length > 0 ? substr($w->review_content, $start, $length) : '';
+$layoutId = $length > 0 ? substr($w->review_content, $start, $length) : '';
 }
-if ($content === false || empty($content) || $layout_id != $settings['style_id'] || (strpos($content, '<!-- R-LIST -->') === false && $need_to_parse)) {
-if (!$this->template_cache) {
-add_action('http_api_curl', function ($handle) {
-curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
-}, 10);
+if ($content === false || empty($content) || $layoutId != $settings['style_id'] || (strpos($content, '<!-- R-LIST -->') === false && $needToParse)) {
+if (!$this->templateCache) {
 $response = wp_remote_get("https://cdn.trustindex.io/" . "widget-assets/template/v2/{$settings['language']}.json");
 if (is_wp_error($response)) {
-$html = $this->get_alertbox('error', '<br />' . $this->___('Could not download the template for the widget.<br />Please reload the page.<br />If the problem persists, please write an e-mail to support@trustindex.io.'));
-$allowed_html = array(
+$html = $this->getAlertbox('error', '<br />' . __('Could not download the template for the widget.<br />Please reload the page.<br />If the problem persists, please write an e-mail to support@trustindex.io.', 'testimonial-widgets'));
+$allowedHtml = array(
 'div' => array(
 'style' => array()
 ),
@@ -555,7 +541,7 @@ $allowed_html = array(
 ),
 'br' => array()
 );
-echo wp_kses($html, $allowed_html);
+echo wp_kses($html, $allowedHtml);
 die;
 }
 $response['body'] = preg_replace('/<!-- VERIFIED BY TRUSTINDEX START.*?VERIFIED BY TRUSTINDEX END -->/s', '', $response['body']);
@@ -568,60 +554,60 @@ $html = preg_replace(
 $html
 );
 }
-$this->template_cache = $data;
+$this->templateCache = $data;
 }
-$content = $this->template_cache[$settings['style_id']];
-$this->update_widget_review_content($widget_id, $content);
-}
-if ($need_to_parse) {
-$content = $this->parse_noreg_list_reviews([
-'content' => $content,
-'reviews' => $reviews,
-'settings' => $settings,
-]);
-$this->preview_content = [
-'id' => $settings['style_id'],
-'content' => $content
-];
+$content = $this->templateCache[$settings['style_id']];
+$this->updateWidgetReviewContent($widgetId, $content);
 }
 if ($settings['slider_interval']) {
 $content = preg_replace('/data-pager-autoplay-timeout=[\'"][^\'"]*[\'"]/m', 'data-pager-autoplay-timeout="' . $settings['slider_interval'] . '"', $content);
 }
 $content = preg_replace('/data-set[_-]id=[\'"][^\'"]*[\'"]/m', 'data-set-id="' . $settings['set_id'] . '"', $content);
 $content = preg_replace('/class="\s*ti-widget\s*"/', 'class="ti-widget"', $content);
-$class_appends = ['ti-wp-testimonial-' . $w->id, 'ti-no-logo'];
+if ($needToParse) {
+$content = $this->parseNoregListReviews([
+'content' => $content,
+'reviews' => $reviews,
+'settings' => $settings,
+]);
+$this->previewContent = [
+'id' => $settings['style_id'],
+'content' => $content
+];
+}
+$classAppends = ['ti-wp-testimonial-' . $w->id, 'ti-no-logo'];
 if ($settings['show_logos']) {
-$class_appends []= 'ti-no-logo';
+$classAppends []= 'ti-no-logo';
 }
 if ($settings['show_stars']) {
-$class_appends []= 'ti-no-stars';
+$classAppends []= 'ti-no-stars';
 }
 if (!$settings['show-review-images']) {
-$class_appends []= 'ti-no-review-images';
+$classAppends []= 'ti-no-review-images';
 }
 if ($settings['auto_height']) {
-$class_appends []= 'ti-auto-height';
+$classAppends []= 'ti-auto-height';
 }
-if ($w->css && !$only_preview)
+if ($w->css && !$onlyPreview)
 {
-wp_register_style("testimonial-widgets-css-live-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], false );
+wp_register_style("testimonial-widgets-css-live-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], false, [], $this->version);
 wp_enqueue_style( "testimonial-widgets-css-live-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'] );
 wp_add_inline_style("testimonial-widgets-css-live-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], $w->css );
 }
 else
 {
-wp_enqueue_style("testimonial-widgets-css-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], "https://cdn.trustindex.io/" . "assets/widget-presetted-css/v2/" . $settings['style_id'] . "-" . $settings['set_id'] . ".css");
+wp_enqueue_style("testimonial-widgets-css-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], "https://cdn.trustindex.io/" . "assets/widget-presetted-css/v2/" . $settings['style_id'] . "-" . $settings['set_id'] . ".css", [], $this->version);
 if (in_array($settings['style_id'], array(36,37,38,39)))
 {
 $content = str_replace('class="ti-widget"', 'id="override-preset-'. $settings['style_id'] .'" class="ti-widget"', $content);
-$inline_style = "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img img {
+$inlineStyle = "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img img {
 width: 120px !important;
 height: 120px !important;
 border-radius: 60px !important;
 }";
 if ($settings['style_id'] == 36 || $settings['style_id'] == 37 || $settings['style_id'] == 38)
 {
-$inline_style = $inline_style . "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img {
+$inlineStyle = $inlineStyle . "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img {
 margin: 0 !important;
 margin-top: -75px !important;
 margin-bottom: 15px !important;
@@ -629,20 +615,20 @@ align-self: center;
 }";
 if ($settings['style_id'] == 38)
 {
-$inline_style = $inline_style . "#override-preset-". $settings['style_id'] ." .ti-review-item {
+$inlineStyle = $inlineStyle . "#override-preset-". $settings['style_id'] ." .ti-review-item {
 padding-top: 75px;
 }";
 }
 else
 {
-$inline_style = $inline_style . "#override-preset-". $settings['style_id'] ." .ti-reviews-container-wrapper {
+$inlineStyle = $inlineStyle . "#override-preset-". $settings['style_id'] ." .ti-reviews-container-wrapper {
 padding-top: 75px;
 }";
 }
 }
 else if ($settings['style_id'] == 39)
 {
-$inline_style = $inline_style . "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img {
+$inlineStyle = $inlineStyle . "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img {
 margin: 20px 0 0 !important;
 margin-bottom: 10px !important;
 align-self: center;
@@ -651,12 +637,12 @@ align-self: center;
 padding-top: 8px;
 }";
 }
-wp_add_inline_style("testimonial-widgets-css-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], $inline_style);
+wp_add_inline_style("testimonial-widgets-css-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], $inlineStyle);
 }
 else if ($settings['style_id'] == 44)
 {
 $content = str_replace('class="ti-widget"', 'id="override-preset-'. $settings['style_id'] .'" class="ti-widget"', $content);
-$inline_style = "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img img {
+$inlineStyle = "#override-preset-". $settings['style_id'] ." .ti-review-header .ti-profile-img img {
 width: 100px !important;
 height: 100px !important;
 border-radius: 50px !important;
@@ -672,15 +658,15 @@ padding-bottom: 40px !important;
 padding-left: 58px;
 }
 ";
-wp_add_inline_style("testimonial-widgets-css-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], $inline_style);
+wp_add_inline_style("testimonial-widgets-css-" . $w->id . "-" . $settings['style_id'] . "-" . $settings['set_id'], $inlineStyle);
 }
 }
-if ($class_appends) {
-$content = str_replace('class="ti-widget" data-layout-id=', 'class="ti-widget ' . implode(' ', $class_appends) . '" data-layout-id=', $content);
+if ($classAppends) {
+$content = str_replace('class="ti-widget" data-layout-id=', 'class="ti-widget ' . implode(' ', $classAppends) . '" data-layout-id=', $content);
 }
 return $content;
 }
-public function parse_noreg_list_reviews($array = [])
+public function parseNoregListReviews($array = [])
 {
 preg_match('/<!-- R-LIST -->(.*)<!-- R-LIST -->/', $array['content'], $matches);
 if (isset($matches[1])) {
@@ -689,7 +675,7 @@ if ($array['reviews'] && count($array['reviews'])) {
 foreach ($array['reviews'] as $r) {
 $date = "&nbsp;";
 if ($r['date'] && $r['date'] != '0000-00-00') {
-$date = str_replace(self::$widget_month_names['en'], self::$widget_month_names[$array['settings']['language']], date($array['settings']['date_format'], strtotime($r['date'])));
+$date = str_replace(self::$widgetMonthNames['en'], self::$widgetMonthNames[$array['settings']['language']], gmdate($array['settings']['date_format'], strtotime($r['date'])));
 }
 if ($r['company_website'])
 {
@@ -697,25 +683,25 @@ $input = trim($r['company_website'], '/');
 if (!preg_match('#^http(s)?://#', $input)) {
 $input = 'http://' . $input;
 }
-$urlParts = parse_url($input);
+$urlParts = wp_parse_url($input);
 if (isset($urlParts['host'])) {
 $scheme = isset($urlParts['scheme']) ? $urlParts['scheme'] . '://' : 'http://';
 $host = preg_replace('/^www\./', '', $urlParts['host']);
 $path = isset($urlParts['path']) ? $urlParts['path'] : '';
 $fullUrl = $scheme . $host . $path;
 if ($r['company_name']) {
-$info = '<a href="' . $fullUrl . '" target="_blank">' . $r['company_name'] . '</a>';
+$info = '<a href="' . esc_url($fullUrl) . '" target="_blank">' . esc_html($r['company_name']) . '</a>';
 } else {
-$info = '<a href="' . $fullUrl . '" target="_blank">' . $fullUrl . '</a>';
+$info = '<a href="' . esc_url($fullUrl) . '" target="_blank">' . esc_html($fullUrl) . '</a>';
 }
 } else {
-$info = $r['company_name'] ?? $date;
+$info = isset($r['company_name']) ? esc_html($r['company_name']) : $date;
 }
 } else {
-$info = $r['company_name'] ?? $date;
+$info = isset($r['company_name']) ? esc_html($r['company_name']) : $date;
 }
-$rating_content = $this->get_rating_stars($r['star_rating']);
-$platform_name = ucfirst($this->getShortName());
+$ratingContent = $this->getRatingStars($r['star_rating']);
+$platformName = ucfirst($this->getShortName());
 if (!$array['settings']['show-review-images']) {
 if (in_array($array['settings']['style_id'], [45, 46, 47, 48]))
 {
@@ -726,29 +712,22 @@ else
 $matches[1] = str_replace('<div class="ti-profile-img"> <img src="%reviewer_photo%" alt="%reviewer_name%" /> </div>', '', $matches[1]);
 }
 }
-if ($r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']])
+if ($r['photo'][TrustindexTestimonialsPlugin::$widgetTemplates['templates'][$array['settings']['style_id']]['image']])
 {
-$reviewer_photo = $r['photo'][TrustindexTestimonialsPlugin::$widget_templates['templates'][$array['settings']['style_id']]['image']];
+$reviewerPhoto = $r['photo'][TrustindexTestimonialsPlugin::$widgetTemplates['templates'][$array['settings']['style_id']]['image']];
 }
 else
 {
-$reviewer_photo = 'https://cdn.trustindex.io/' . 'assets/default-avatar/noprofile-06.svg';
+$reviewerPhoto = $this->getPluginFileUrl('static/img/noprofile.svg');
 }
-$reviewContent .= str_replace([
-'%platform%',
-'%reviewer_photo%',
-'%reviewer_name%',
-'%created_at%',
-'%text%',
-'<!-- STARS-CONTENT -->'
-], [
-$platform_name,
-$reviewer_photo,
-$r['client_name'],
-$info,
-preg_replace('/\r\n|\r|\n/', "\n", html_entity_decode($r['content'], ENT_HTML5 | ENT_QUOTES)),
-$rating_content
-], $matches[1]);
+$reviewContent .= strtr($matches[1], [
+'%platform%' => $platformName,
+'%reviewer_photo%' => esc_url($reviewerPhoto),
+'%reviewer_name%' => esc_attr($r['client_name']),
+'%created_at%' => $info,
+'%text%' => preg_replace('/\r\n|\r|\n/', "\n", wp_kses_post((string) $r['content'])),
+'<!-- STARS-CONTENT -->' => $ratingContent,
+]);
 $reviewContent = str_replace('<div></div>', '', $reviewContent);
 }
 $array['content'] = str_replace($matches[0], $reviewContent, $array['content']);
@@ -777,17 +756,17 @@ $array['content'] = str_replace($matches[0], $matches[0] . ' width="150" height=
 }
 return $array['content'];
 }
-public function get_shortcode_name()
+public function getShortcodeName()
 {
 return 'wp-testimonials';
 }
-public function init_shortcode()
+public function initShortcode()
 {
-if (!shortcode_exists($this->get_shortcode_name())) {
-add_shortcode($this->get_shortcode_name(), [$this, 'shortcode_func']);
+if (!shortcode_exists($this->getShortcodeName())) {
+add_shortcode($this->getShortcodeName(), [$this, 'shortcodeFunc']);
 }
 }
-public function shortcode_func($atts)
+public function shortcodeFunc($atts)
 {
 $atts = shortcode_atts(
 array(
@@ -796,65 +775,72 @@ array(
 $atts
 );
 if (isset($atts["widget-id"]) && $atts["widget-id"]) {
-$widget = $this->get_widget($atts["widget-id"]);
+$widget = $this->getWidget($atts["widget-id"]);
 if ($widget)
 {
 $val = unserialize($widget->value);
-return $this->get_noreg_list_reviews($widget->id, true, $val['2'], $val['3']);
+return $this->getNoregListReviews($widget->id, true, $val['2'], $val['3']);
 }
 else
 {
-return self::get_alertbox(
+return self::getAlertbox(
 "error",
-" @ <strong>" . TrustindexTestimonialsPlugin::___('%s plugin', [esc_attr($this->plugin_name)]) . "</strong><br /><br />"
-. TrustindexTestimonialsPlugin::___('Widget ID %s does not exists!', [$atts["widget-id"]]),
+/* translators: %s: plugin name */
+" @ <strong>" . sprintf(__('%s plugin', 'testimonial-widgets'), esc_attr($this->pluginName)) . "</strong><br /><br />"
+/* translators: %s: widget ID given in the shortcode */
+. sprintf(__('Widget ID %s does not exists!', 'testimonial-widgets'), esc_html($atts["widget-id"])),
 false
 );
 }
 }
 else
 {
-return self::get_alertbox(
+return self::getAlertbox(
 "error",
-" @ <strong>" . TrustindexTestimonialsPlugin::___('%s plugin', [esc_attr($this->plugin_name)]) . "</strong><br /><br />"
-. TrustindexTestimonialsPlugin::___('Your shortcode is deficient: %s ID is empty! Example: ', [esc_attr($this->plugin_name)]) . '<br /><code>[' . $this->get_shortcode_name() . ' widget-id="12"]</code>',
+/* translators: %s: plugin name */
+" @ <strong>" . sprintf(__('%s plugin', 'testimonial-widgets'), esc_attr($this->pluginName)) . "</strong><br /><br />"
+/* translators: %s: plugin name */
+. sprintf(__('Your shortcode is deficient: %s ID is empty! Example: ', 'testimonial-widgets'), esc_attr($this->pluginName)) . '<br /><code>[' . $this->getShortcodeName() . ' widget-id="12"]</code>',
 false
 );
 }
 }
-public static function get_alertbox($type, $content, $newline_content = true)
+public static function getAlertbox($type, $content, $newlineContent = true)
 {
 $types = array(
 "warning" => array(
 "css" => "color: #856404; background-color: #fff3cd; border-color: #ffeeba;",
-"icon" => "dashicons-warning"
+"icon" => "dashicons-warning",
+"label" => __('warning', 'testimonial-widgets')
 ),
 "info" => array(
 "css" => "color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb;",
-"icon" => "dashicons-info"
+"icon" => "dashicons-info",
+"label" => __('info', 'testimonial-widgets')
 ),
 "error" => array(
 "css" => "color: #721c24; background-color: #f8d7da; border-color: #f5c6cb;",
-"icon" => "dashicons-info"
+"icon" => "dashicons-info",
+"label" => __('error', 'testimonial-widgets')
 )
 );
 return "<div style='margin:20px 0px; padding:10px; " . $types[$type]['css'] . " border-radius: 5px;'>"
-. "<span class='dashicons " . $types[$type]['icon'] . "'></span> <strong>" . strtoupper(TrustindexTestimonialsPlugin::___($type)) . "</strong>"
-. ($newline_content ? "<br />" : "")
+. "<span class='dashicons " . $types[$type]['icon'] . "'></span> <strong>" . strtoupper($types[$type]['label']) . "</strong>"
+. ($newlineContent ? "<br />" : "")
 . $content
 . "</div>";
 }
-public function get_rating_stars($rating_score)
+public function getRatingStars($ratingScore)
 {
 $text = "";
-if (!is_numeric($rating_score)) {
+if (!is_numeric($ratingScore)) {
 return $text;
 }
-$fullStarUrl = '<img class="ti-star" src="https://cdn.trustindex.io/assets/platform/Google/star/f.svg" alt="Google" width="17" height="17" loading="lazy" />';
-for ($si = 1; $si <= $rating_score; $si++) {
+$fullStarUrl = '<img class="ti-star" src="' . esc_url($this->getPluginFileUrl('static/img/star/f.svg', false)) . '" alt="Google" width="17" height="17" loading="lazy" />';
+for ($si = 1; $si <= $ratingScore; $si++) {
 $text .= $fullStarUrl;
 }
-$fractional = $rating_score - floor($rating_score);
+$fractional = $ratingScore - floor($ratingScore);
 if (0.25 <= $fractional) {
 if ($fractional < 0.75) {
 $text .= preg_replace('/f(\.svg)?"/', 'h$1"', $fullStarUrl);
@@ -868,71 +854,71 @@ $text .= preg_replace('/f(\.svg)?"/', 'e$1"', $fullStarUrl);
 }
 return $text;
 }
-public function save_css($id, $widget, $return = false)
+public function saveCss($id, $widget, $return = false)
 {
-$style_id = $widget['2'];
-$set_id = $widget['3'];
+$styleId = $widget['2'];
+$setId = $widget['3'];
 add_filter('https_ssl_verify', '__return_false');
 add_filter('block_local_requests', '__return_false');
 $params = [
 'platform' => 'google',
-'layout_id' => $style_id,
-'set_id' => $set_id
+'layout_id' => $styleId,
+'set_id' => $setId
 ];
 foreach ($widget['4']['appearance'] as $name => $value)
 {
 if ($name == 'text-align')
 {
-if(in_array($style_id, [ 36, 37, 38, 39, 45, 48 ]))
+if(in_array($styleId, [ 36, 37, 38, 39, 45, 48 ]))
 {
 $name = 'content-align';
 }
 }
 if (isset($value) && $value != "")
 {
-$px_array = array('profile-font-size','review-font-size','box-border-top-width','box-border-bottom-width','box-border-left-width','box-border-right-width','box-padding','box-border-radius');
-if (in_array($name, $px_array))
+$pxArray = array('profile-font-size','review-font-size','box-border-top-width','box-border-bottom-width','box-border-left-width','box-border-right-width','box-padding','box-border-radius');
+if (in_array($name, $pxArray))
 {
 $value = $value . 'px';
 }
 $params['overrides'][$name] = $value;
 }
 }
-if (TrustindexTestimonialsPlugin::$widget_templates['templates'][$style_id]['generate'])
+if (TrustindexTestimonialsPlugin::$widgetTemplates['templates'][$styleId]['generate'])
 {
-$params['overrides']['ti-profile-img-size'] = TrustindexTestimonialsPlugin::$widget_templates['templates'][$style_id]['image'];
+$params['overrides']['ti-profile-img-size'] = TrustindexTestimonialsPlugin::$widgetTemplates['templates'][$styleId]['image'];
 }
 $url = 'https://admin.trustindex.io/' . 'api/getLayoutScss?' . http_build_query($params);
-$server_output = $this->post_request($url, [
+$serverOutput = $this->postRequest($url, [
 'timeout' => '20',
 'redirection' => '5',
 'blocking' => true
 ]);
-if ($server_output[0] !== '[' && $server_output[0] !== '{') {
-$server_output = substr($server_output, strpos($server_output, '('));
-$server_output = trim($server_output, '();');
+if ($serverOutput[0] !== '[' && $serverOutput[0] !== '{') {
+$serverOutput = substr($serverOutput, strpos($serverOutput, '('));
+$serverOutput = trim($serverOutput, '();');
 }
-$server_output = json_decode($server_output, true);
-if ($server_output['css']) {
-if ($style_id == 17 || $style_id == 21) {
-$server_output['css'] .= '.ti-preview-box { position: initial !important }';
+$serverOutput = json_decode($serverOutput, true);
+if ($serverOutput['css']) {
+if ($styleId == 17 || $styleId == 21) {
+$serverOutput['css'] .= '.ti-preview-box { position: initial !important }';
 }
-$server_output['css'] = str_replace('.source-Google', '.source-' . ucfirst($this->getShortName()), $server_output['css']);
+$serverOutput['css'] = str_replace('.source-Google', '.source-' . ucfirst($this->getShortName()), $serverOutput['css']);
 if ($return)
 {
-$server_output['css'] = str_replace('.ti-widget.', '.ti-widget[data-layout-id="' . $style_id . '"][data-set-id="' . $set_id . '"].', $server_output['css']);
-$server_output['css'] = str_replace('.ti-goog', '', $server_output['css']);
-return $server_output['css'];
+$serverOutput['css'] = str_replace('.ti-widget.', '.ti-widget[data-layout-id="' . $styleId . '"][data-set-id="' . $setId . '"].', $serverOutput['css']);
+$serverOutput['css'] = str_replace('.ti-goog', '', $serverOutput['css']);
+return $serverOutput['css'];
 }
 else
 {
-$server_output['css'] = str_replace('.ti-goog', '.ti-wp-testimonial-' . $id, $server_output['css']);
-$server_output['css'] .= $this->get_additional_widget_style($id, $style_id);
-$this->update_widget_css($id, $server_output['css']);
+$serverOutput['css'] = str_replace('.ti-goog', '.ti-wp-testimonial-' . $id, $serverOutput['css']);
+$serverOutput['css'] .= $this->getAdditionalWidgetStyle($id, $styleId);
+$this->updateWidgetCss($id, $serverOutput['css']);
 }
 }
 }
-private function get_additional_widget_style($id, $style_id)
+private function getAdditionalWidgetStyle($id, $styleId)
 {
 $style = ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-review-images .ti-profile-img{display: none;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-stars .ti-stars .ti-star{display: none;} ";
@@ -941,51 +927,51 @@ $style .= ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-stars .ti-review-item 
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . ".ti-no-stars .ti-review-item .ti-stars .ti-star.h{display: none;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . " .ti-widget-container .ti-review-item .ti-profile-details .ti-date a {text-decoration: none !important; font-size: 12px;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . " .ti-widget-container .ti-review-item .ti-profile-details .ti-date a:hover{text-decoration: underline !important; font-size: 12px;} ";
-if ($style_id == 4 || $style_id == 16 || $style_id == 19 || $style_id == 36 || $style_id == 37 || $style_id == 38 || $style_id == 45 || $style_id == 46 || $style_id == 47 || $style_id == 48)
+if ($styleId == 4 || $styleId == 16 || $styleId == 19 || $styleId == 36 || $styleId == 37 || $styleId == 38 || $styleId == 45 || $styleId == 46 || $styleId == 47 || $styleId == 48)
 {
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content {height: auto !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content {height: auto !important;} ";
 }
-else if ($style_id == 6)
+else if ($styleId == 6)
 {
-$style .= ".ti-review-content .inner .ti-review-text, .ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content .ti-inner .ti-review-text {max-height: unset !important; -webkit-line-clamp: unset !important;} ";
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content .ti-inner {height: auto !important;} ";
+$style .= ".ti-review-content .inner .ti-review-text, .ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content .ti-inner .ti-review-text {max-height: unset !important; -webkit-line-clamp: unset !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content .ti-inner {height: auto !important;} ";
 }
-else if ($style_id == 7)
+else if ($styleId == 7)
 {
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content .ti-inner {height: auto !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content .ti-inner {height: auto !important;} ";
 }
-else if ($style_id == 15)
+else if ($styleId == 15)
 {
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content .ti-review-text {height: auto !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content .ti-review-text {height: auto !important;} ";
 }
-else if ($style_id == 18)
+else if ($styleId == 18)
 {
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content .ti-inner {max-height: unset !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content .ti-inner {max-height: unset !important;} ";
 }
-else if ($style_id == 19)
+else if ($styleId == 19)
 {
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content [class$=inner] .ti-review-text {max-height: unset !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content [class$=inner] .ti-review-text {max-height: unset !important;} ";
 }
-else if ($style_id == 31)
+else if ($styleId == 31)
 {
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content .ti-inner {max-height: unset !important; -webkit-line-clamp: unset !important;} ";
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-item .ti-read-more {display: none !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content .ti-inner {max-height: unset !important; -webkit-line-clamp: unset !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-item .ti-read-more {display: none !important;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . " .ti-widget-container {margin: unset; display: block;max-width: 100%;} ";
 $style .= ".ti-widget.ti-wp-testimonial-" . $id . " .ti-reviews-container-wrapper {overflow: hidden !important;} ";
 }
-else if ($style_id == 33)
+else if ($styleId == 33)
 {
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-content .ti-inner {max-height: unset !important; -webkit-line-clamp: unset !important;} ";
-$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $style_id . "'].ti-auto-height .ti-review-item .ti-read-more {display: none;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-content .ti-inner {max-height: unset !important; -webkit-line-clamp: unset !important;} ";
+$style .= ".ti-widget.ti-wp-testimonial-" . $id . "[data-layout-id='" . $styleId . "'].ti-auto-height .ti-review-item .ti-read-more {display: none;} ";
 }
 return $style;
 }
-private function post_request($url, $args)
+private function postRequest($url, $args)
 {
 $response = wp_remote_post($url, $args);
 if (is_wp_error($response)) {
-$html = $this->get_alertbox('error', '<br />Error with wp_remote_post, error message: <br /><b>' . $response->get_error_message() . '</b>');
-$allowed_html = array(
+$html = $this->getAlertbox('error', '<br />Error with wp_remote_post, error message: <br /><b>' . $response->get_error_message() . '</b>');
+$allowedHtml = array(
 'div' => array(
 'style' => array()
 ),
@@ -994,41 +980,41 @@ $allowed_html = array(
 ),
 'br' => array()
 );
-echo wp_kses($html, $allowed_html);
+echo wp_kses($html, $allowedHtml);
 die;
 }
 return wp_remote_retrieve_body($response);
 }
 
-static function plugin_activation()
+static function pluginActivation()
 {
-wpttst_register_cpt();
-update_option('wpttst_custom_forms', self::update_custom_forms());
+wpttstRegisterCpt();
+update_option('wpttst_custom_forms', self::updateCustomForms());
 if (get_option('wp-testimonials-visited-get-reviews') === false)
 {
 add_option( 'wp-testimonials-visited-get-reviews', 'no');
 }
 flush_rewrite_rules();
 }
-static function plugin_deactivation()
+static function pluginDeactivation()
 {
 delete_option('wpttst_custom_forms');
 delete_option('wp-testimonials-visited-get-reviews');
 flush_rewrite_rules();
 }
-function plugin_uninstall()
+function pluginUninstall()
 {
-$this->remove_widgets_table();
-$this->remove_testimonials();
-$this->remove_testimonial_categories();
+$this->removeWidgetsTable();
+$this->removeTestimonials();
+$this->removeTestimonialCategories();
 }
-public function plugin_loaded()
+public function pluginLoaded()
 {
 $this->loadI18N();
 }
 
-public static function edit_columns( $columns ) {
-$fields = wpttst_get_all_fields();
+public static function editColumns( $columns ) {
+$fields = wpttstGetAllFields();
 unset( $columns['testimonial-widgets_thumbnail'], $columns['date'] );
 $key = 'title';
 $offset = array_search( $key, array_keys( $columns ) ) + 1;
@@ -1037,36 +1023,36 @@ if ( $field['admin_table'] ) {
 if ( 'post_title' == $field['name'] ) {
 continue;
 } elseif ( 'featured_image' == $field['name'] ) {
-$fields_to_add['testimonial-widgets_thumbnail'] = TrustindexTestimonialsPlugin::___( 'Thumbnail' );
+$fieldsToAdd['testimonial-widgets_thumbnail'] = __('Thumbnail', 'testimonial-widgets');
 } elseif ( 'rating' == $field['input_type'] ) {
-$fields_to_add[ $field['name'] ] = TrustindexTestimonialsPlugin::___( 'Rating' );
+$fieldsToAdd[ $field['name'] ] = __('Rating', 'testimonial-widgets');
 } else {
-$fields_to_add[ $field['name'] ] = apply_filters( 'wpttst_l10n', $field['label'], 'testimonial-widgets-form-fields', $field['name'] . ' : label' );
+$fieldsToAdd[ $field['name'] ] = apply_filters( 'wpttst_l10n', $field['label'], 'testimonial-widgets-form-fields', $field['name'] . ' : label' );
 }
 }
 }
-if ( count( get_terms( 'wpt-testimonial-category', array( 'hide_empty' => false ) ) )) {
-$fields_to_add['category'] = TrustindexTestimonialsPlugin::___( 'Categories' );
+if ( count( get_terms( array( 'taxonomy' => 'wpt-testimonial-category', 'hide_empty' => false ) ) )) {
+$fieldsToAdd['category'] = __('Categories', 'testimonial-widgets');
 }
-$fields_to_add['date'] = TrustindexTestimonialsPlugin::___( 'Date' );
+$fieldsToAdd['date'] = __('Date', 'testimonial-widgets');
 $columns = array_merge(
 array_slice( $columns, 0, $offset ),
-$fields_to_add,
+$fieldsToAdd,
 array_slice( $columns, $offset, null )
 );
 return $columns;
 }
-public static function custom_columns( $column ) {
+public static function customColumns( $column ) {
 global $post;
 switch ( $column ) {
 case 'post_id' :
 echo absint( esc_attr($post->ID) );
 break;
 case 'post_content' :
-echo substr( esc_attr($post->post_content), 0, 100 ) . '&hellip;';
+echo esc_html( mb_substr( $post->post_content, 0, 100 ) ) . '&hellip;';
 break;
 case 'testimonial-widgets_thumbnail' :
-echo wpttst_get_thumbnail( array( 60, 60 ) );
+echo wp_kses_post( wpttstGetThumbnail( array( 60, 60 ) ) );
 break;
 case 'category' :
 $categories = get_the_terms( 0, 'wpt-testimonial-category' );
@@ -1080,12 +1066,12 @@ echo esc_attr(implode( ", ", $list ));
 break;
 default :
 $custom = get_post_custom();
-$fields = wpttst_get_custom_fields();
+$fields = wpttstGetCustomFields();
 if ( isset( $custom[ $column ] ) && $custom[ $column ][0] ) {
 if ( isset( $fields[ $column ] ) ) {
 switch ( $fields[ $column ]['input_type'] ) {
 case 'rating' :
-wpttst_star_rating_display( $custom[ $column ][0], 'in-table-list' );
+wpttstStarRatingDisplay( $custom[ $column ][0], 'in-table-list' );
 break;
 case 'checkbox' :
 echo $custom[ $column ][0] ? 'yes' : 'no';
@@ -1104,154 +1090,154 @@ echo 'no';
 }
 }
 }
-public static function update_custom_forms()
+public static function updateCustomForms()
 {
-$custom_forms = get_option('wpttst_custom_forms');
-if (!$custom_forms) {
-return self::get_custom_forms();
+$customForms = get_option('wpttst_custom_forms');
+if (!$customForms) {
+return self::getCustomForms();
 }
-foreach ($custom_forms as $form_id => $form_properties) {
-foreach ($form_properties['fields'] as $key => $form_field) {
+foreach ($customForms as $formId => $formProperties) {
+foreach ($formProperties['fields'] as $key => $formField) {
 /*
 * Convert categories to category-selector.
 * @since 2.17.0
 */
-if ('categories' == $form_field['input_type']) {
-$custom_forms[$form_id]['fields'][$key]['input_type'] = 'category-selector';
+if ('categories' == $formField['input_type']) {
+$customForms[$formId]['fields'][$key]['input_type'] = 'category-selector';
 }
 /*
 * Unset `show_default_options` for rating field. Going from 0 to 1.
 * @since 2.21.0
 */
-if ('rating' == $form_field['input_type']) {
-unset($form_field['show_default_options']);
+if ('rating' == $formField['input_type']) {
+unset($formField['show_default_options']);
 }
 /*
 * Add `show_required_option` to shortcode field. Initial value is false.
 * @since 2.22.0
 */
-if ('shortcode' == $form_field['input_type']) {
-$form_field['show_required_option'] = false;
+if ('shortcode' == $formField['input_type']) {
+$formField['show_required_option'] = false;
 }
 /*
 * Add `show_default_options` to checkbox field.
 *
 * @since 2.27.0
 */
-if ('checkbox' == $form_field['input_type']) {
-$form_field['show_default_options'] = 1;
+if ('checkbox' == $formField['input_type']) {
+$formField['show_default_options'] = 1;
 }
 /*
 * Merge in new default.
 * Custom fields are in display order (not associative) so we must find them by `input_type`.
 * @since 2.21.0 Using default fields instead of default form as source
 */
-$new_default = array();
+$newDefault = array();
 $fields = get_option('wpttst_fields', array());
-foreach ($fields['field_types'] as $field_type_group_key => $field_type_group) {
-foreach ($field_type_group as $field_type_key => $field_type_field) {
-if ($field_type_field['input_type'] == $form_field['input_type']) {
-$new_default = $field_type_field;
+foreach ($fields['field_types'] as $fieldTypeGroupKey => $fieldTypeGroup) {
+foreach ($fieldTypeGroup as $fieldTypeKey => $fieldTypeField) {
+if ($fieldTypeField['input_type'] == $formField['input_type']) {
+$newDefault = $fieldTypeField;
 break;
 }
 }
 }
-if ($new_default) {
-$custom_forms[$form_id]['fields'][$key] = array_merge($new_default, $form_field);
+if ($newDefault) {
+$customForms[$formId]['fields'][$key] = array_merge($newDefault, $formField);
 }
 }
 }
-return $custom_forms;
+return $customForms;
 }
-public static function get_custom_forms()
+public static function getCustomForms()
 {
-$base_forms = self::get_base_forms();
+$baseForms = self::getBaseForms();
 $forms[1] = array(
 'name' => 'custom',
-'label' => TrustindexTestimonialsPlugin::___('Custom Form'),
+'label' => __('Custom Form', 'testimonial-widgets'),
 'readonly' => 0,
-'fields' => $base_forms['default']['fields'],
+'fields' => $baseForms['default']['fields'],
 );
 return apply_filters('wpttst_update_custom_form', $forms);
 }
-public static function get_base_forms()
+public static function getBaseForms()
 {
-$default_fields = self::get_fields();
+$defaultFields = self::getFields();
 $forms = array(
 'default' => array(
 'name' => 'default',
-'label' => TrustindexTestimonialsPlugin::___('Default Form'),
+'label' => __('Default Form', 'testimonial-widgets'),
 'readonly' => 1,
 'fields' => array(
 0 => array(
 'record_type' => 'custom',
 'name' => 'client_name',
-'label' => TrustindexTestimonialsPlugin::___('Full Name'),
+'label' => __('Full Name', 'testimonial-widgets'),
 'input_type' => 'text',
 'required' => 1,
-'after' => TrustindexTestimonialsPlugin::___('What is your full name?'),
+'after' => __('What is your full name?', 'testimonial-widgets'),
 'admin_table' => 1,
 ),
 1 => array(
 'record_type' => 'custom',
 'name' => 'company_name',
-'label' => TrustindexTestimonialsPlugin::___('Company Name'),
+'label' => __('Company Name', 'testimonial-widgets'),
 'input_type' => 'text',
-'after' => TrustindexTestimonialsPlugin::___('What is your company name?'),
+'after' => __('What is your company name?', 'testimonial-widgets'),
 ),
 2 => array(
 'record_type' => 'custom',
 'name' => 'company_website',
-'label' => TrustindexTestimonialsPlugin::___('Company Website'),
+'label' => __('Company Website', 'testimonial-widgets'),
 'input_type' => 'text',
-'after' => TrustindexTestimonialsPlugin::___('Does your company have a website?'),
+'after' => __('Does your company have a website?', 'testimonial-widgets'),
 ),
 5 => array(
 'record_type' => 'post',
 'name' => 'post_title',
-'label' => TrustindexTestimonialsPlugin::___('Heading'),
+'label' => __('Heading', 'testimonial-widgets'),
 'input_type' => 'text',
 'required' => 0,
-'after' => TrustindexTestimonialsPlugin::___('A headline for your testimonial.'),
+'after' => __('A headline for your testimonial.', 'testimonial-widgets'),
 'max_length' => ''
 ),
 6 => array(
 'record_type' => 'post',
 'name' => 'post_content',
-'label' => TrustindexTestimonialsPlugin::___('Testimonial'),
+'label' => __('Testimonial', 'testimonial-widgets'),
 'input_type' => 'textarea',
 'required' => 1,
-'after' => TrustindexTestimonialsPlugin::___('What do you think about us?'),
+'after' => __('What do you think about us?', 'testimonial-widgets'),
 'max_length' => ''
 ),
 7 => array(
 'record_type' => 'post',
 'name' => 'featured_image',
-'label' => TrustindexTestimonialsPlugin::___('Photo'),
+'label' => __('Photo', 'testimonial-widgets'),
 'input_type' => 'file',
-'after' => TrustindexTestimonialsPlugin::___('Would you like to include a photo?'),
+'after' => __('Would you like to include a photo?', 'testimonial-widgets'),
 'admin_table' => 1,
 ),
 8 => array(
 'record_type' => 'optional',
 'name' => 'star_rating',
-'label' => TrustindexTestimonialsPlugin::___('Star rating'),
+'label' => __('Star rating', 'testimonial-widgets'),
 'input_type' => 'rating',
 'required' => 0,
-'after' => TrustindexTestimonialsPlugin::___('Would you like to include star rating?')
+'after' => __('Would you like to include star rating?', 'testimonial-widgets')
 ),
 ),
 ),
 );
 $forms['minimal'] = array(
 'name' => 'minimal',
-'label' => TrustindexTestimonialsPlugin::___('Minimal Form'),
+'label' => __('Minimal Form', 'testimonial-widgets'),
 'readonly' => 1,
 'fields' => array(
 0 => array(
 'record_type' => 'custom',
 'name' => 'client_name',
-'label' => TrustindexTestimonialsPlugin::___('Name'),
+'label' => __('Name', 'testimonial-widgets'),
 'input_type' => 'text',
 'required' => 1,
 'after' => '',
@@ -1260,37 +1246,37 @@ $forms['minimal'] = array(
 1 => array(
 'record_type' => 'post',
 'name' => 'post_content',
-'label' => TrustindexTestimonialsPlugin::___('Testimonial'),
+'label' => __('Testimonial', 'testimonial-widgets'),
 'input_type' => 'textarea',
 'required' => 1,
 'after' => '',
 ),
 ),
 );
-foreach ($forms as $form_name => $form) {
+foreach ($forms as $formName => $form) {
 foreach ($form['fields'] as $key => $array) {
 if ('post' == $array['record_type']) {
-$forms[$form_name]['fields'][$key] = array_merge($default_fields['field_types']['post'][$array['name']], $array);
+$forms[$formName]['fields'][$key] = array_merge($defaultFields['field_types']['post'][$array['name']], $array);
 } elseif ('custom' == $array['record_type']) {
-$forms[$form_name]['fields'][$key] = array_merge($default_fields['field_types']['custom'][$array['input_type']], $array);
+$forms[$formName]['fields'][$key] = array_merge($defaultFields['field_types']['custom'][$array['input_type']], $array);
 } else {
-$forms[$form_name]['fields'][$key] = array_merge($default_fields['field_types']['optional'][$array['input_type']], $array);
+$forms[$formName]['fields'][$key] = array_merge($defaultFields['field_types']['optional'][$array['input_type']], $array);
 }
 }
 }
 return $forms;
 }
-public static function get_fields()
+public static function getFields()
 {
-$field_base = self::get_field_base();
-$field_types = array();
+$fieldBase = self::getFieldBase();
+$fieldTypes = array();
 /*
 * Assemble post field types
 */
-$field_types['post'] = array(
+$fieldTypes['post'] = array(
 'post_title' => array(
 'input_type' => 'text',
-'option_label' => TrustindexTestimonialsPlugin::___('Testimonial Title'),
+'option_label' => __('Testimonial Title', 'testimonial-widgets'),
 'map' => 'post_title',
 'show_default_options' => 0,
 'admin_table' => 1,
@@ -1301,7 +1287,7 @@ $field_types['post'] = array(
 ),
 'post_content' => array(
 'input_type' => 'textarea',
-'option_label' => TrustindexTestimonialsPlugin::___('Testimonial Content'),
+'option_label' => __('Testimonial Content', 'testimonial-widgets'),
 'map' => 'post_content',
 'required' => 1,
 'show_default_options' => 0,
@@ -1313,7 +1299,7 @@ $field_types['post'] = array(
 ),
 'featured_image' => array(
 'input_type' => 'file',
-'option_label' => TrustindexTestimonialsPlugin::___('Reviewer\'s photo'),
+'option_label' => __('Reviewer\'s photo', 'testimonial-widgets'),
 'map' => 'featured_image',
 'show_default_options' => 0,
 'show_placeholder_option' => 0,
@@ -1321,31 +1307,31 @@ $field_types['post'] = array(
 'name_mutable' => 0,
 )
 );
-foreach ($field_types['post'] as $key => $array) {
-$field_types['post'][$key] = array_merge($field_base, $array);
+foreach ($fieldTypes['post'] as $key => $array) {
+$fieldTypes['post'][$key] = array_merge($fieldBase, $array);
 }
 /*
 * Assemble custom field types
 */
-$field_types['custom'] = array(
+$fieldTypes['custom'] = array(
 'text' => array(
 'input_type' => 'text',
-'option_label' => TrustindexTestimonialsPlugin::___('text'),
+'option_label' => __('text', 'testimonial-widgets'),
 ),
 'url' => array(
 'input_type' => 'url',
-'option_label' => TrustindexTestimonialsPlugin::___('URL'),
+'option_label' => __('URL', 'testimonial-widgets'),
 'show_default_options' => 0,
 ),
 'checkbox' => array(
 'input_type' => 'checkbox',
-'option_label' => TrustindexTestimonialsPlugin::___('checkbox'),
+'option_label' => __('checkbox', 'testimonial-widgets'),
 'show_text_option' => 1,
 'show_placeholder_option' => 0,
 ),
 );
-foreach ($field_types['custom'] as $key => $array) {
-$field_types['custom'][$key] = array_merge($field_base, $array);
+foreach ($fieldTypes['custom'] as $key => $array) {
+$fieldTypes['custom'][$key] = array_merge($fieldBase, $array);
 }
 /*
 * Assemble special field types (FKA Optional)
@@ -1353,10 +1339,10 @@ $field_types['custom'][$key] = array_merge($field_base, $array);
 * @since 1.18
 * @since 2.2.2 Fix bug caused by localizing 'categories'
 */
-$field_types['optional'] = array(
+$fieldTypes['optional'] = array(
 'category-selector' => array(
 'input_type' => 'category-selector',
-'option_label' => TrustindexTestimonialsPlugin::___('category selector'),
+'option_label' => __('category selector', 'testimonial-widgets'),
 'show_default_options' => 0,
 'show_placeholder_option' => 0,
 'show_admin_table_option' => 0,
@@ -1364,7 +1350,7 @@ $field_types['optional'] = array(
 ),
 'category-checklist' => array(
 'input_type' => 'category-checklist',
-'option_label' => TrustindexTestimonialsPlugin::___('category checklist'),
+'option_label' => __('category checklist', 'testimonial-widgets'),
 'show_default_options' => 0,
 'show_placeholder_option' => 0,
 'show_admin_table_option' => 0,
@@ -1372,7 +1358,7 @@ $field_types['optional'] = array(
 ),
 'shortcode' => array(
 'input_type' => 'shortcode',
-'option_label' => TrustindexTestimonialsPlugin::___('shortcode'),
+'option_label' => __('shortcode', 'testimonial-widgets'),
 'show_label' => 0,
 'required' => 0,
 'show_required_option' => 0,
@@ -1383,7 +1369,7 @@ $field_types['optional'] = array(
 ),
 'rating' => array(
 'input_type' => 'rating',
-'option_label' => TrustindexTestimonialsPlugin::___('star rating'),
+'option_label' => __('star rating', 'testimonial-widgets'),
 'show_placeholder_option' => 0,
 'admin_table' => 1,
 'admin_table_option' => 1,
@@ -1393,19 +1379,19 @@ $field_types['optional'] = array(
 /*
 * Merge each one onto base field
 */
-foreach ($field_types['optional'] as $key => $array) {
-$field_types['optional'][$key] = array_merge($field_base, $array);
+foreach ($fieldTypes['optional'] as $key => $array) {
+$fieldTypes['optional'][$key] = array_merge($fieldBase, $array);
 }
 /*
 * Assemble all fields
 */
-$default_fields = array(
-'field_base' => $field_base,
-'field_types' => $field_types,
+$defaultFields = array(
+'field_base' => $fieldBase,
+'field_types' => $fieldTypes,
 );
-return apply_filters('wpttst_default_fields', $default_fields);
+return apply_filters('wpttst_default_fields', $defaultFields);
 }
-public static function get_field_base()
+public static function getFieldBase()
 {
 return apply_filters('wpttst_field_base', array(
 'name' => '',
@@ -1422,7 +1408,7 @@ return apply_filters('wpttst_field_base', array(
 'default_form_value' => '',
 'default_display_value' => '',
 'show_default_options' => 1,
-'error' => TrustindexTestimonialsPlugin::___('This field is required.'),
+'error' => __('This field is required.', 'testimonial-widgets'),
 'placeholder' => '',
 'show_placeholder_option' => 1,
 'before' => '',
@@ -1438,7 +1424,7 @@ return apply_filters('wpttst_field_base', array(
 ));
 }
 
-public static $widget_templates = array(
+public static $widgetTemplates = array(
 'categories' =>
 array(
 'slider' => '4,5,13,15,19,34,36,37,39,44,45,46,47',
@@ -1598,7 +1584,7 @@ array(
 ),
 ),
 );
-public static $widget_styles = array(
+public static $widgetStyles = array(
 'light-background' =>
 array(
 'id' => 'light-background',
@@ -3175,9 +3161,10 @@ array(
 ),
 ),
 );
-public static $widget_languages = [
+public static $widgetLanguages = [
 'ar' => "العربية",
-'zh' => "汉语",
+'zh' => "简体中文",
+'zh_TW' => "繁體中文",
 'cs' => "Čeština",
 'da' => "Dansk",
 'nl' => "Nederlands",
@@ -3223,8 +3210,19 @@ public static $widget_languages = [
 'cy' => 'Cymraeg',
 'fa' => 'فارسی'
 ];
-public static $widget_dateformats = ['j. F, Y.', 'F j, Y.', 'Y.m.d.', 'Y-m-d', 'd/m/Y'];
-private static $widget_month_names = array(
+
+public static function getWidgetLanguage($locale)
+{
+$locale = str_replace('-', '_', strtolower((string) $locale));
+if (strpos($locale, 'zh') === 0) {
+$lang = preg_match('/_(hant|tw|hk|mo)$/', $locale) ? 'zh_TW' : 'zh';
+} else {
+$lang = substr($locale, 0, 2);
+}
+return isset(self::$widgetLanguages[$lang]) ? $lang : 'en';
+}
+public static $widgetDateformats = ['j. F, Y.', 'F j, Y.', 'Y.m.d.', 'Y-m-d', 'd/m/Y'];
+private static $widgetMonthNames = array(
 'en' =>
 array(
 0 => 'January',
@@ -3917,14 +3915,14 @@ array(
 ),
 );
 
-public static function get_widget_tablename()
+public static function getWidgetTablename()
 {
 global $wpdb;
 return $wpdb->prefix . "trustindex_testimonials_widgets";
 }
-public function create_widgets_table()
+public function createWidgetsTable()
 {
-$dbtable = $this->get_widget_tablename();
+$dbtable = $this->getWidgetTablename();
 $sql = "CREATE TABLE IF NOT EXISTS $dbtable (
 id TINYINT(2) NOT NULL AUTO_INCREMENT,
 name VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
@@ -3937,26 +3935,25 @@ PRIMARY KEY (id)
 );";
 dbDelta($sql);
 }
-static function remove_widgets_table()
+static function removeWidgetsTable()
 {
 global $wpdb;
-$dbtable = TrustindexTestimonialsPlugin::get_widget_tablename();
-$sql = "DROP TABLE IF EXISTS $dbtable";
-$wpdb->query($sql);
+$dbtable = TrustindexTestimonialsPlugin::getWidgetTablename();
+$wpdb->query($wpdb->prepare('DROP TABLE IF EXISTS %i', $dbtable));
 }
-public function create_widget($name, $widget_settings)
+public function createWidget($name, $widgetSettings)
 {
-$dbtable = $this->get_widget_tablename();
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
 $result = $wpdb->insert(
 $dbtable,
 array(
 'name' => $name,
-'value' => $widget_settings,
+'value' => $widgetSettings,
 'review_content' => null,
 'css' => null,
-'created_at' => date('Y-m-d H:i:s'),
-'updated_at' => date('Y-m-d H:i:s'),
+'created_at' => gmdate('Y-m-d H:i:s'),
+'updated_at' => gmdate('Y-m-d H:i:s'),
 ),
 array('%s', '%s', '%s', '%s', '%s')
 );
@@ -3969,16 +3966,16 @@ else
 return false;
 }
 }
-public function update_widget($id, $name, $widget_settings)
+public function updateWidget($id, $name, $widgetSettings)
 {
-$dbtable = $this->get_widget_tablename();
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
 $result = $wpdb->update(
 $dbtable,
 array(
 'name' => $name,
-'value' => $widget_settings,
-'updated_at' => date('Y-m-d H:i:s'),
+'value' => $widgetSettings,
+'updated_at' => gmdate('Y-m-d H:i:s'),
 ),
 array('id' => $id),
 array('%s', '%s', '%s'),
@@ -3986,14 +3983,14 @@ array('%d')
 );
 return $result;
 }
-public function update_widget_review_content($id, $review_content)
+public function updateWidgetReviewContent($id, $reviewContent)
 {
-$dbtable = $this->get_widget_tablename();
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
 $result = $wpdb->update(
 $dbtable,
 array(
-'review_content' => $review_content,
+'review_content' => $reviewContent,
 ),
 array('id' => $id),
 array('%s'),
@@ -4001,9 +3998,9 @@ array('%d')
 );
 return $result;
 }
-public function update_widget_css($id, $css)
+public function updateWidgetCss($id, $css)
 {
-$dbtable = $this->get_widget_tablename();
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
 $result = $wpdb->update(
 $dbtable,
@@ -4016,70 +4013,71 @@ array('%d')
 );
 return $result;
 }
-public function get_next_widget_id()
+public function getNextWidgetId()
 {
-$dbtable = $this->get_widget_tablename();
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
-$sql = "SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '{$dbtable}'";
-$result = $wpdb->get_results($sql);
+$result = $wpdb->get_results($wpdb->prepare('SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES WHERE table_name = %s', $dbtable));
 return $result[0]->auto_increment;
 }
-public function get_widget($id)
+public function getWidget($id)
 {
-$widget_id = (int)$id;
-$dbtable = $this->get_widget_tablename();
+$widgetId = (int)$id;
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
-$result = $wpdb->get_row($wpdb->prepare("SELECT * FROM $dbtable WHERE id = %d", [$widget_id]));
+$result = $wpdb->get_row($wpdb->prepare('SELECT * FROM %i WHERE id = %d', $dbtable, $widgetId));
 return $result;
 }
-public function get_widgets($order_by = "id", $order = "asc", $search = null)
+public function getWidgets($orderBy = "id", $order = "asc", $search = null)
 {
-$dbtable = $this->get_widget_tablename();
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
-$sql = "SELECT * FROM $dbtable";
+$orderColumn = 'name' === $orderBy ? 'name' : 'id';
 if ($search)
 {
-$sql .= " WHERE name LIKE '%{$search}%'";
+$results = $wpdb->get_results($wpdb->prepare('SELECT * FROM %i WHERE name LIKE %s ORDER BY %i', $dbtable, '%' . $wpdb->esc_like($search) . '%', $orderColumn));
 }
-$sql .= " ORDER BY $order_by $order";
-$results = $wpdb->get_results($sql);
-return $results;
-}
-public function delete_widget($id)
+else
 {
-$dbtable = $this->get_widget_tablename();
+$results = $wpdb->get_results($wpdb->prepare('SELECT * FROM %i ORDER BY %i', $dbtable, $orderColumn));
+}
+return 'desc' === $order ? array_reverse($results) : $results;
+}
+public function deleteWidget($id)
+{
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
 $result = $wpdb->delete($dbtable, array('id' => $id), array( '%d' ));
 return $result;
 }
-public function duplicate_widget($id)
+public function duplicateWidget($id)
 {
-$widget_id = (int)$id;
-$dbtable = $this->get_widget_tablename();
+$widgetId = (int)$id;
+$dbtable = $this->getWidgetTablename();
 global $wpdb;
-$row = $wpdb->get_row($wpdb->prepare("SELECT * FROM $dbtable WHERE id = %d", [$widget_id]));
-$name = $row->name . '-' . TrustindexTestimonialsPlugin::___('copy');
+$row = $wpdb->get_row($wpdb->prepare('SELECT * FROM %i WHERE id = %d', $dbtable, $widgetId));
+$name = $row->name . '-' . __('copy', 'testimonial-widgets');
 $result = $wpdb->insert(
 $dbtable,
 array(
 'name' => $name,
 'value' => $row->value,
 'review_content' => $row->review_content,
-'created_at' => date('Y-m-d H:i:s'),
+'created_at' => gmdate('Y-m-d H:i:s'),
 'updated_at' => $row->updated_at
 ),
 array('%s', '%s', '%s', '%s', '%s')
 );
-$new_id = $wpdb->insert_id;
-$css = $this->copy_css($row->css, $id, $new_id);
-$this->update_widget_css($new_id, $css);
+$newId = $wpdb->insert_id;
+$css = $this->copyCss($row->css, $id, $newId);
+$this->updateWidgetCss($newId, $css);
 return $result;
 }
-private function copy_css($css, $from_id, $to_id)
+private function copyCss($css, $fromId, $toId)
 {
-return str_replace('.ti-wp-testimonial-'.$from_id, '.ti-wp-testimonial-' . $to_id, $css);
+return str_replace('.ti-wp-testimonial-'.$fromId, '.ti-wp-testimonial-' . $toId, $css);
 }
-public function get_categories()
+public function getCategories()
 {
 $result = array();
 $terms = get_terms('wpt-testimonial-category');
@@ -4095,13 +4093,13 @@ $result[] = array(
 }
 return $result;
 }
-public function get_reviews($filter = null)
+public function getReviews($filter = null)
 {
 $result = array();
 if (isset($filter) && $filter['mode'] == 'manual_select')
 {
 foreach ($filter['ids'] as $id)
-$result[] = $this->get_review_data($id);
+$result[] = $this->getReviewData($id);
 if (isset($filter['order']) && $filter['order'] == 'newest')
 {
 usort($result, function ($a, $b) { return (strtotime($b["date"]) - strtotime($a["date"])); });
@@ -4151,27 +4149,27 @@ $args['orderby'] = 'rand';
 }
 if (isset($filter) && $filter['rating'] !== 'all')
 {
-$rs = $this->get_reviews_data($args);
-$accepted_ratings = null;
+$rs = $this->getReviewsData($args);
+$acceptedRatings = null;
 if ($filter['rating'] === 'only_5')
 {
-$accepted_ratings = [5];
+$acceptedRatings = [5];
 }
 else if ($filter['rating'] === 'min_4')
 {
-$accepted_ratings = [4,5];
+$acceptedRatings = [4,5];
 }
 else if ($filter['rating'] === 'min_3')
 {
-$accepted_ratings = [3,4,5];
+$acceptedRatings = [3,4,5];
 }
 else if ($filter['rating'] === 'max_3')
 {
-$accepted_ratings = [1,2,3];
+$acceptedRatings = [1,2,3];
 }
 foreach ($rs as $r)
 {
-if (in_array($r['star_rating'], $accepted_ratings))
+if (in_array($r['star_rating'], $acceptedRatings))
 {
 $result[] = $r;
 }
@@ -4179,15 +4177,15 @@ $result[] = $r;
 }
 else
 {
-$result = $this->get_reviews_data($args);
+$result = $this->getReviewsData($args);
 }
 }
 return $result;
 }
-private function get_reviews_data($args)
+private function getReviewsData($args)
 {
 $result = array();
-$meta_keys = array(
+$metaKeys = array(
 'client_name',
 'company_name',
 'company_website',
@@ -4203,7 +4201,7 @@ $tmp['id'] = $post->ID;
 if(!empty($post->post_date))
 {
 $date = strtotime($post->post_date);
-$tmp['date'] = date('Y-m-d', $date);
+$tmp['date'] = gmdate('Y-m-d', $date);
 }
 else
 {
@@ -4211,12 +4209,12 @@ $tmp['date'] = null;
 }
 $tmp['content'] = !empty($post->post_content) ? $post->post_content : null;
 $tmp['title'] = !empty($post->post_title) ? $post->post_title : null;
-foreach($meta_keys as $key)
+foreach($metaKeys as $key)
 {
-$value = $this->get_post_meta_value($post->ID, $key);
+$value = $this->getPostMetaValue($post->ID, $key);
 if (!empty($value))
 {
-$tmp[$key] = $this->get_post_meta_value($post->ID, $key);
+$tmp[$key] = $this->getPostMetaValue($post->ID, $key);
 }
 else
 {
@@ -4224,19 +4222,19 @@ $tmp[$key] = null;
 }
 }
 $tmp['photo'] = array();
-foreach (TrustindexTestimonialsPlugin::$thumbnail_sizes as $thumbnail_size)
+foreach (TrustindexTestimonialsPlugin::$thumbnailSizes as $thumbnailSize)
 {
-$tmp['photo'][$thumbnail_size] = get_the_post_thumbnail_url($post->ID, 'wpt-testimonial-thumbnail-' . $thumbnail_size);
+$tmp['photo'][$thumbnailSize] = get_the_post_thumbnail_url($post->ID, 'wpt-testimonial-thumbnail-' . $thumbnailSize);
 }
 $result[] = $tmp;
 }
 }
 return $result;
 }
-private function get_review_data($id)
+private function getReviewData($id)
 {
 $result = array();
-$meta_keys = array(
+$metaKeys = array(
 'client_name',
 'company_name',
 'company_website',
@@ -4249,7 +4247,7 @@ $result['id'] = $post->ID;
 if(!empty($post->post_date))
 {
 $date = strtotime($post->post_date);
-$result['date'] = date('Y-m-d', $date);
+$result['date'] = gmdate('Y-m-d', $date);
 }
 else
 {
@@ -4257,12 +4255,12 @@ $result['date'] = null;
 }
 $result['content'] = !empty($post->post_content) ? $post->post_content : null;
 $result['title'] = !empty($post->post_title) ? $post->post_title : null;
-foreach($meta_keys as $key)
+foreach($metaKeys as $key)
 {
-$value = $this->get_post_meta_value($post->ID, $key);
+$value = $this->getPostMetaValue($post->ID, $key);
 if (!empty($value))
 {
-$result[$key] = $this->get_post_meta_value($post->ID, $key);
+$result[$key] = $this->getPostMetaValue($post->ID, $key);
 }
 else
 {
@@ -4270,18 +4268,18 @@ $result[$key] = null;
 }
 }
 $result['photo'] = array();
-foreach (TrustindexTestimonialsPlugin::$thumbnail_sizes as $thumbnail_size)
+foreach (TrustindexTestimonialsPlugin::$thumbnailSizes as $thumbnailSize)
 {
-$result['photo'][$thumbnail_size] = get_the_post_thumbnail_url($post->ID, 'wpt-testimonial-thumbnail-' . $thumbnail_size);
+$result['photo'][$thumbnailSize] = get_the_post_thumbnail_url($post->ID, 'wpt-testimonial-thumbnail-' . $thumbnailSize);
 }
 }
 return $result;
 }
-private function get_post_meta_value($id, $key)
+private function getPostMetaValue($id, $key)
 {
 return get_post_meta($id, $key, true);
 }
-static function remove_testimonials()
+static function removeTestimonials()
 {
 $testimonials = get_posts(
 array(
@@ -4298,35 +4296,29 @@ wp_delete_post( $t->ID, true);
 }
 }
 }
-public function remove_testimonial_categories()
+public function removeTestimonialCategories()
 {
 global $wpdb;
-$sql = "SELECT * FROM $wpdb->term_taxonomy WHERE taxonomy = 'wpt-testimonial-category'";
-$results = $wpdb->get_results($sql);
-$term_ids = array();
-$term_taxonomy_ids = array();
+$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s", 'wpt-testimonial-category'));
+$termIds = array();
+$termTaxonomyIds = array();
 foreach ($results as $result)
 {
-$term_taxonomy_ids[] = $result->term_taxonomy_id;
-$term_ids[] = $result->term_id;
+$termTaxonomyIds[] = $result->term_taxonomy_id;
+$termIds[] = $result->term_id;
 }
-if ( is_array( $term_ids ) && !empty( $term_ids ) )
+if ( is_array( $termIds ) && !empty( $termIds ) )
 {
-$id_in = implode( ',', $term_ids );
-$sql = $wpdb->prepare( "DELETE FROM $wpdb->terms WHERE term_id IN ( $id_in )" );
-$sql_meta = $wpdb->prepare( "DELETE FROM $wpdb->term_taxonomy WHERE term_id IN ( $id_in )" );
-$wpdb->query( $sql );
-$wpdb->query( $sql_meta );
+$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->terms} WHERE term_id IN (" . implode( ',', array_fill( 0, count( $termIds ), '%d' ) ) . ')', $termIds ) );
+$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->term_taxonomy} WHERE term_id IN (" . implode( ',', array_fill( 0, count( $termIds ), '%d' ) ) . ')', $termIds ) );
 }
-if ( is_array( $term_taxonomy_ids ) && !empty( $term_taxonomy_ids ) )
+if ( is_array( $termTaxonomyIds ) && !empty( $termTaxonomyIds ) )
 {
-$id_in = implode( ',', $term_taxonomy_ids );
-$sql_relation = $wpdb->prepare( "DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ( $id_in )" );
-$wpdb->query( $sql_relation );
+$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (" . implode( ',', array_fill( 0, count( $termTaxonomyIds ), '%d' ) ) . ')', $termTaxonomyIds ) );
 }
 }
 
-public function get_category_tablename()
+public function getCategoryTablename()
 {
 global $wpdb;
 return $wpdb->prefix . "terms";

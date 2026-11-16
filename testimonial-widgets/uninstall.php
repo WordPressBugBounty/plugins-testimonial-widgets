@@ -1,6 +1,8 @@
 <?php
-defined('ABSPATH') or die('No script kiddies please!');
+if (!defined('WP_UNINSTALL_PLUGIN')) {
+exit;
+}
 require_once plugin_dir_path( __FILE__ ) . 'testimonials-plugin.class.php';
-$trustindex_pm_google = new TrustindexTestimonialsPlugin("Testimonial Widgets", __FILE__, "1.4.13", "Testimonial Widgets");
-$trustindex_pm_google->plugin_uninstall();
+$wpttstPluginManager = new TrustindexTestimonialsPlugin("Testimonial Widgets", __FILE__, "1.4.14", "Testimonial Widgets");
+$wpttstPluginManager->pluginUninstall();
 ?>

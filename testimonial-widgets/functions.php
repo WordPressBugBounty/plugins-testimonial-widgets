@@ -1,8 +1,9 @@
 <?php
+defined('ABSPATH') or die('No script kiddies please!');
 
-function wpttst_get_post( $post ) {
+function wpttstGetPost( $post ) {
 $custom = get_post_custom( $post->ID );
-$fields = wpttst_get_custom_fields();
+$fields = wpttstGetCustomFields();
 foreach ( $fields as $key => $field ) {
 $name = $field['name'];
 if ( 'featured_image' == $name ) {
@@ -20,34 +21,34 @@ $post->$name = '';
 return $post;
 }
 
-function wpttst_get_custom_fields() {
-$all_fields = array();
+function wpttstGetCustomFields() {
+$allFields = array();
 $forms = get_option( 'wpttst_custom_forms' );
 if ( ! $forms ) {
-return $all_fields;
+return $allFields;
 }
 $fields = $forms[1]['fields'];
 if ( ! $fields ) {
-return $all_fields;
+return $allFields;
 }
 foreach ( $fields as $field ) {
 if ( 'post' != $field['record_type'] ) {
-$all_fields[ $field['name'] ] = $field;
+$allFields[ $field['name'] ] = $field;
 }
 }
 foreach ( $forms as $form ) {
-$custom_fields = array();
+$customFields = array();
 $fields = $form['fields'];
 foreach ( $fields as $field ) {
 if ( 'post' != $field['record_type'] ) {
-$custom_fields[ $field['name'] ] = $field;
+$customFields[ $field['name'] ] = $field;
 }
 }
-$all_fields = array_merge( $all_fields, $custom_fields );
+$allFields = array_merge( $allFields, $customFields );
 }
-return $all_fields;
+return $allFields;
 }
-function wpttst_get_thumbnail( $size = null ) {
+function wpttstGetThumbnail( $size = null ) {
 if (! is_admin() ) {
 return '';
 }
@@ -63,7 +64,7 @@ $img = get_the_post_thumbnail( $id, $size );
 
 return apply_filters( 'wpttst_thumbnail_img', $img, $id, $size );
 }
-function wpttst_get_field( $field, $args = array() ) {
+function wpttstGetField( $field, $args = array() ) {
 if ( ! $field ) {
 return '';
 }
@@ -81,24 +82,24 @@ $html = get_post_meta( $post->ID, $field, true );
 
 return $html;
 }
-function wpttst_get_all_fields() {
+function wpttstGetAllFields() {
 $forms = get_option( 'wpttst_custom_forms' );
-$all_fields = array();
+$allFields = array();
 
 
 $fields = $forms[1]['fields'];
 foreach ( $fields as $field ) {
-$all_fields[ $field['name'] ] = $field;
+$allFields[ $field['name'] ] = $field;
 }
 foreach ( $forms as $form ) {
-$custom_fields = array();
+$customFields = array();
 $fields = $form['fields'];
 foreach ( $fields as $field ) {
-$custom_fields[ $field['name'] ] = $field;
+$customFields[ $field['name'] ] = $field;
 }
-$all_fields = array_merge( $all_fields, $custom_fields );
+$allFields = array_merge( $allFields, $customFields );
 }
 
-return $all_fields;
+return $allFields;
 }
 ?>

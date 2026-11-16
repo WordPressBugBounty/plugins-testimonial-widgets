@@ -1,54 +1,54 @@
 <?php
 defined('ABSPATH') or die('No script kiddies please!');
-$current_step = isset($_GET['step']) ? intval(sanitize_text_field($_GET['step'])) : 1;
-$page = sanitize_text_field($_GET['page']);
-$id = isset($_GET['id']) ? intval(sanitize_text_field($_GET['id'])) : null;
-$name_missing = isset($_GET['name-required']) ? true : false;
-$selected = isset($_GET['selected']) ? true : null;
-$style_id = isset($_GET['style_id']) ? intval(sanitize_text_field($_GET['style_id'])) : null;
-$scss_set = isset($_GET['scss_set']) ? sanitize_text_field($_GET['scss_set']) : null;
-$widget_setted_up = isset($_GET['setup_widget']) ? true : null;
-wp_enqueue_style("trustindex-widget-preview-css", "https://cdn.trustindex.io/" . "assets/ti-preview-box.css");
-global $trustindex_testimonials_pm;
-$widget_name = null;
-if ($scss_set)
+$wpttstCurrentStep = isset($_GET['step']) ? intval(sanitize_text_field(wp_unslash($_GET['step']))) : 1;
+$page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+$id = isset($_GET['id']) ? intval(sanitize_text_field(wp_unslash($_GET['id']))) : null;
+$wpttstNameMissing = isset($_GET['name-required']) ? true : false;
+$wpttstSelected = isset($_GET['selected']) ? true : null;
+$wpttstStyleId = isset($_GET['style_id']) ? intval(sanitize_text_field(wp_unslash($_GET['style_id']))) : null;
+$wpttstScssSet = isset($_GET['scss_set']) ? sanitize_text_field(wp_unslash($_GET['scss_set'])) : null;
+$wpttstWidgetSettedUp = isset($_GET['setup_widget']) ? true : null;
+wp_enqueue_style("trustindex-widget-preview-css", "https://cdn.trustindex.io/" . "assets/ti-preview-box.css", [], "1.4.14");
+global $wpttstPluginManager;
+$wpttstWidgetName = null;
+if ($wpttstScssSet)
 {
-$use_appearance = $scss_set;
+$wpttstUseAppearance = $wpttstScssSet;
 }
 else
 {
-$use_appearance = 'light-background';
+$wpttstUseAppearance = 'light-background';
 }
-$appearance = array(
+$wpttstAppearance = array(
 'hide_stars' => false,
 'hide_image' => false,
 'display_type' => 'website',
 'date_format' => 'j. F, Y.',
-'hover-anim' => filter_var($trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['hover-anim'], FILTER_VALIDATE_BOOLEAN),
-'enable-font' => filter_var($trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['enable-font'], FILTER_VALIDATE_BOOLEAN),
-'nav' => $trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['nav'],
-'dots' => $trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['dots'],
-'text-align' => isset($style_id) && in_array($style_id, ['36','37','38','45','48']) ? 'center' : 'left',
+'hover-anim' => filter_var($wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['hover-anim'], FILTER_VALIDATE_BOOLEAN),
+'enable-font' => filter_var($wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['enable-font'], FILTER_VALIDATE_BOOLEAN),
+'nav' => $wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['nav'],
+'dots' => $wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['dots'],
+'text-align' => isset($wpttstStyleId) && in_array($wpttstStyleId, ['36','37','38','45','48']) ? 'center' : 'left',
 'auto_height' => false,
-'review-lines' =>filter_var($trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['review-lines'], FILTER_VALIDATE_INT),
-'box-background-color' => rest_parse_hex_color($trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['box-background-color']),
-'box-border-color' => rest_parse_hex_color($trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['box-border-color']),
-'box-padding' => filter_var(str_replace('px','',$trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['box-padding']), FILTER_VALIDATE_INT),
-'box-border-top-width' => filter_var(str_replace('px','',$trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['box-border-top-width']), FILTER_VALIDATE_INT),
-'box-border-left-width' => filter_var(str_replace('px','',$trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['box-border-left-width']), FILTER_VALIDATE_INT),
-'box-border-right-width' => filter_var(str_replace('px','',$trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['box-border-right-width']), FILTER_VALIDATE_INT),
-'box-border-bottom-width' => filter_var(str_replace('px','',$trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['box-border-bottom-width']), FILTER_VALIDATE_INT),
-'box-border-radius' => filter_var(str_replace('px','',$trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['box-border-radius']), FILTER_VALIDATE_INT),
-'profile-font-size' => filter_var(str_replace('px','',$trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['profile-font-size']), FILTER_VALIDATE_INT),
-'profile-color' => rest_parse_hex_color($trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['profile-color']),
-'review-font-size' => filter_var(str_replace('px','',$trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['review-font-size']), FILTER_VALIDATE_INT),
-'text-color' => rest_parse_hex_color($trustindex_testimonials_pm::$widget_styles[$use_appearance]['_vars']['text-color']),
+'review-lines' =>filter_var($wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['review-lines'], FILTER_VALIDATE_INT),
+'box-background-color' => rest_parse_hex_color($wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['box-background-color']),
+'box-border-color' => rest_parse_hex_color($wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['box-border-color']),
+'box-padding' => filter_var(str_replace('px','',$wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['box-padding']), FILTER_VALIDATE_INT),
+'box-border-top-width' => filter_var(str_replace('px','',$wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['box-border-top-width']), FILTER_VALIDATE_INT),
+'box-border-left-width' => filter_var(str_replace('px','',$wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['box-border-left-width']), FILTER_VALIDATE_INT),
+'box-border-right-width' => filter_var(str_replace('px','',$wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['box-border-right-width']), FILTER_VALIDATE_INT),
+'box-border-bottom-width' => filter_var(str_replace('px','',$wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['box-border-bottom-width']), FILTER_VALIDATE_INT),
+'box-border-radius' => filter_var(str_replace('px','',$wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['box-border-radius']), FILTER_VALIDATE_INT),
+'profile-font-size' => filter_var(str_replace('px','',$wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['profile-font-size']), FILTER_VALIDATE_INT),
+'profile-color' => rest_parse_hex_color($wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['profile-color']),
+'review-font-size' => filter_var(str_replace('px','',$wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['review-font-size']), FILTER_VALIDATE_INT),
+'text-color' => rest_parse_hex_color($wpttstPluginManager::$widgetStyles[$wpttstUseAppearance]['_vars']['text-color']),
 );
-$navigation = array(
+$wpttstNavigation = array(
 'navigation_style' => 'arrow',
 'slider_interval' => 6,
 );
-$widget = array(
+$wpttstWidget = array(
 'current' => 1,
 'saved' => 0,
 '1' => array(
@@ -62,13 +62,18 @@ $widget = array(
 'general' => array(
 'order' => 'newest',
 ),
-'appearance' => $appearance,
-'navigation' => $navigation,
+'appearance' => $wpttstAppearance,
+'navigation' => $wpttstNavigation,
 'last_saved' => 'general'
 ),
 );
-$ti_command = isset($_REQUEST['command']) ? sanitize_text_field($_REQUEST['command']) : null;
-$ti_command_list = [
+$wpttstCommand = null;
+if (isset($_REQUEST['command']))
+{
+check_admin_referer('ti-save-widget');
+$wpttstCommand = sanitize_text_field(wp_unslash($_REQUEST['command']));
+}
+$wpttstCommandList = [
 'save-review-filter',
 'save-style',
 'save-set',
@@ -86,34 +91,34 @@ $ti_command_list = [
 'save-arrow',
 'save-dots'
 ];
-if (!in_array($ti_command, $ti_command_list)) {
-$ti_command = null;
+if (!in_array($wpttstCommand, $wpttstCommandList)) {
+$wpttstCommand = null;
 }
-if ($current_step === 1)
+if ($wpttstCurrentStep === 1)
 {
-$categories = $trustindex_testimonials_pm->get_categories();
-$reviews = $trustindex_testimonials_pm->get_reviews();
-$next_widget_id = $trustindex_testimonials_pm->get_next_widget_id();
+$wpttstCategories = $wpttstPluginManager->getCategories();
+$wpttstReviews = $wpttstPluginManager->getReviews();
+$wpttstNextWidgetId = $wpttstPluginManager->getNextWidgetId();
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-if ($name_missing == false)
+$wpttstW = $wpttstPluginManager->getWidget($id);
+if ($wpttstNameMissing == false)
 {
-$widget_name = $w->name;
+$wpttstWidgetName = $wpttstW->name;
 }
-$widget_value = unserialize($w->value);
-$widget = $widget_value;
+$wpttstWidgetValue = unserialize($wpttstW->value);
+$wpttstWidget = $wpttstWidgetValue;
 }
 }
 else
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget_name = $w->name;
-$widget_value = unserialize($w->value);
-$widget = $widget_value;
-$reviews = [1,2];
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidgetValue = unserialize($wpttstW->value);
+$wpttstWidget = $wpttstWidgetValue;
+$wpttstReviews = [1,2];
 }
 else
 {
@@ -121,11 +126,11 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-if ($ti_command == 'save-review-filter') {
-$success = true;
-$widget['current'] = 2;
-$widget_name = isset($_POST['widget-name']) ? sanitize_text_field($_POST['widget-name']) : null;
-if (is_null($widget_name) || empty($widget_name))
+if ($wpttstCommand == 'save-review-filter') {
+$wpttstSuccess = true;
+$wpttstWidget['current'] = 2;
+$wpttstWidgetName = isset($_POST['widget-name']) ? sanitize_text_field(wp_unslash($_POST['widget-name'])) : null;
+if (is_null($wpttstWidgetName) || empty($wpttstWidgetName))
 {
 if ($id)
 {
@@ -138,80 +143,80 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1&name-
 exit;
 }
 }
-$mode = isset($_POST['mode']) ? sanitize_text_field($_POST['mode']) : null;
-$widget['1']['mode'] = $_POST['mode'];
+$mode = isset($_POST['mode']) ? sanitize_text_field(wp_unslash($_POST['mode'])) : null;
+$wpttstWidget['1']['mode'] = $mode;
 if ($mode === 'all')
 {
-$widget['1']['selected'] = null;
+$wpttstWidget['1']['selected'] = null;
 }
 else if ($mode === 'category')
 {
-$category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : null;
-if ($category)
+$wpttstCategory = isset($_POST['category']) ? sanitize_text_field(wp_unslash($_POST['category'])) : null;
+if ($wpttstCategory)
 {
-$widget['1']['selected'] = $category;
+$wpttstWidget['1']['selected'] = $wpttstCategory;
 }
 else
 {
-$success = false;
+$wpttstSuccess = false;
 }
 }
 else if ($mode === 'manual_select')
 {
 if (isset($_POST['review']) && is_array($_POST['review']))
 {
-$rs = array_map( 'sanitize_text_field', $_POST['review']);
+$wpttstRs = array_map( 'sanitize_text_field', wp_unslash($_POST['review']));
 }
 else
 {
-$rs = null;
+$wpttstRs = null;
 }
-if ($rs)
+if ($wpttstRs)
 {
-$selected_ids = array();
-foreach($rs as $k => $v)
+$wpttstSelectedIds = array();
+foreach($wpttstRs as $wpttstK => $wpttstV)
 {
-$r_id = intval(sanitize_text_field($v));
-if ($r_id !== 0)
+$wpttstRId = intval(sanitize_text_field($wpttstV));
+if ($wpttstRId !== 0)
 {
-$selected_ids[] = $r_id;
+$wpttstSelectedIds[] = $wpttstRId;
 }
 }
-$str_selected = implode(",", $selected_ids);
-$widget['1']['selected'] = $str_selected;
+$wpttstStrSelected = implode(",", $wpttstSelectedIds);
+$wpttstWidget['1']['selected'] = $wpttstStrSelected;
 }
 else
 {
-$success = false;
+$wpttstSuccess = false;
 }
 }
 else
 {
-$success = false;
+$wpttstSuccess = false;
 }
-if ($mode !== 'manual_select' && $success)
+if ($mode !== 'manual_select' && $wpttstSuccess)
 {
-$rating = isset($_POST['rating']) ? sanitize_text_field($_POST['rating']) : null;
-if ($rating)
+$wpttstRating = isset($_POST['rating']) ? sanitize_text_field(wp_unslash($_POST['rating'])) : null;
+if ($wpttstRating)
 {
-$widget['1']['rating'] = $rating;
+$wpttstWidget['1']['rating'] = $wpttstRating;
 }
 else
 {
-$success = false;
+$wpttstSuccess = false;
 }
 }
-if ($success)
+if ($wpttstSuccess)
 {
-$widget['saved'] = 1;
-$serialized_widget = serialize($widget);
+$wpttstWidget['saved'] = 1;
+$wpttstSerializedWidget = serialize($wpttstWidget);
 if ($id)
 {
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
-$id = $trustindex_testimonials_pm->create_widget($widget_name, $serialized_widget);
+$id = $wpttstPluginManager->createWidget($wpttstWidgetName, $wpttstSerializedWidget);
 }
 echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=2&id=' . esc_attr($id) . '&selected"</script>';
 exit;
@@ -230,37 +235,37 @@ exit;
 }
 }
 }
-else if ($ti_command == 'save-style')
+else if ($wpttstCommand == 'save-style')
 {
-if ($id || $style_id)
+if ($id || $wpttstStyleId)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-if ($style_id == '17' || $style_id == '21')
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+if ($wpttstStyleId == '17' || $wpttstStyleId == '21')
 {
-$widget['current'] = 4;
-$widget['saved'] = 3;
-$widget['2'] = (string)$style_id;
-$widget['3'] = 'light-background';
-$widget['4']['appearance'] = $appearance;
-$widget['4']['navigation'] = $navigation;
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
-echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=4&id=' . esc_attr($id) . '&selected&style_id=' . esc_attr($style_id) . '&scss_set=light-background"</script>';
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 3;
+$wpttstWidget['2'] = (string)$wpttstStyleId;
+$wpttstWidget['3'] = 'light-background';
+$wpttstWidget['4']['appearance'] = $wpttstAppearance;
+$wpttstWidget['4']['navigation'] = $wpttstNavigation;
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
+echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=4&id=' . esc_attr($id) . '&selected&style_id=' . esc_attr($wpttstStyleId) . '&scss_set=light-background"</script>';
 exit;
 }
 else
 {
-$widget['current'] = 3;
-$widget['2'] = (string)$style_id;
-$widget['4']['appearance'] = $appearance;
-$widget['4']['navigation'] = $navigation;
-$widget['saved'] = 2;
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstWidget['current'] = 3;
+$wpttstWidget['2'] = (string)$wpttstStyleId;
+$wpttstWidget['4']['appearance'] = $wpttstAppearance;
+$wpttstWidget['4']['navigation'] = $wpttstNavigation;
+$wpttstWidget['saved'] = 2;
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 }
 else
@@ -277,24 +282,24 @@ exit;
 }
 }
 }
-else if ($ti_command == 'save-set')
+else if ($wpttstCommand == 'save-set')
 {
-if ($id || $style_id || $scss_set)
+if ($id || $wpttstStyleId || $wpttstScssSet)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-if ($widget['saved'] < 4)
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+if ($wpttstWidget['saved'] < 4)
 {
-$widget['4']['appearance'] = $appearance;
-$widget['4']['navigation'] = $navigation;
+$wpttstWidget['4']['appearance'] = $wpttstAppearance;
+$wpttstWidget['4']['navigation'] = $wpttstNavigation;
 }
-$widget['saved'] = 3;
-$widget['3'] = $scss_set;
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstWidget['saved'] = 3;
+$wpttstWidget['3'] = $wpttstScssSet;
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -310,19 +315,19 @@ exit;
 }
 }
 }
-else if ($ti_command == 'save-order')
+else if ($wpttstCommand == 'save-order')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['general']['order'] = sanitize_text_field($_POST['order']);
-$widget['4']['last_saved'] = 'general';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['general']['order'] = (isset($_POST['order']) ? sanitize_text_field(wp_unslash($_POST['order'])) : '');
+$wpttstWidget['4']['last_saved'] = 'general';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -330,26 +335,26 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-display-options')
+else if ($wpttstCommand == 'save-display-options')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['hide_stars'] = sanitize_text_field($_POST['hide_stars']);
-$widget['4']['appearance']['hide_image'] = sanitize_text_field($_POST['hide_image']);
-$widget['4']['appearance']['auto_height'] = sanitize_text_field($_POST['auto_height']);
-$widget['4']['appearance']['enable-font'] = sanitize_text_field($_POST['enable-font']);
-$widget['4']['appearance']['hover-anim'] = sanitize_text_field($_POST['hover-anim']);
-$widget['4']['appearance']['nav'] = sanitize_text_field($_POST['nav']);
-$widget['4']['appearance']['dots'] = sanitize_text_field($_POST['dots']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['hide_stars'] = (isset($_POST['hide_stars']) ? sanitize_text_field(wp_unslash($_POST['hide_stars'])) : '');
+$wpttstWidget['4']['appearance']['hide_image'] = (isset($_POST['hide_image']) ? sanitize_text_field(wp_unslash($_POST['hide_image'])) : '');
+$wpttstWidget['4']['appearance']['auto_height'] = (isset($_POST['auto_height']) ? sanitize_text_field(wp_unslash($_POST['auto_height'])) : '');
+$wpttstWidget['4']['appearance']['enable-font'] = (isset($_POST['enable-font']) ? sanitize_text_field(wp_unslash($_POST['enable-font'])) : '');
+$wpttstWidget['4']['appearance']['hover-anim'] = (isset($_POST['hover-anim']) ? sanitize_text_field(wp_unslash($_POST['hover-anim'])) : '');
+$wpttstWidget['4']['appearance']['nav'] = (isset($_POST['nav']) ? sanitize_text_field(wp_unslash($_POST['nav'])) : '');
+$wpttstWidget['4']['appearance']['dots'] = (isset($_POST['dots']) ? sanitize_text_field(wp_unslash($_POST['dots'])) : '');
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -357,27 +362,27 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-box')
+else if ($wpttstCommand == 'save-box')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['box-background-color'] = sanitize_hex_color($_POST['box-background-color']);
-$widget['4']['appearance']['box-border-color'] = sanitize_hex_color($_POST['box-border-color']);
-$widget['4']['appearance']['box-padding'] = sanitize_text_field($_POST['box-padding']);
-$widget['4']['appearance']['box-border-top-width'] = sanitize_text_field($_POST['box-border-width']);
-$widget['4']['appearance']['box-border-left-width'] = sanitize_text_field($_POST['box-border-width']);
-$widget['4']['appearance']['box-border-right-width'] = sanitize_text_field($_POST['box-border-width']);
-$widget['4']['appearance']['box-border-bottom-width'] = sanitize_text_field($_POST['box-border-width']);
-$widget['4']['appearance']['box-border-radius'] = sanitize_text_field($_POST['box-border-radius']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['box-background-color'] = (isset($_POST['box-background-color']) ? sanitize_hex_color(wp_unslash($_POST['box-background-color'])) : null);
+$wpttstWidget['4']['appearance']['box-border-color'] = (isset($_POST['box-border-color']) ? sanitize_hex_color(wp_unslash($_POST['box-border-color'])) : null);
+$wpttstWidget['4']['appearance']['box-padding'] = (isset($_POST['box-padding']) ? sanitize_text_field(wp_unslash($_POST['box-padding'])) : '');
+$wpttstWidget['4']['appearance']['box-border-top-width'] = (isset($_POST['box-border-width']) ? sanitize_text_field(wp_unslash($_POST['box-border-width'])) : '');
+$wpttstWidget['4']['appearance']['box-border-left-width'] = (isset($_POST['box-border-width']) ? sanitize_text_field(wp_unslash($_POST['box-border-width'])) : '');
+$wpttstWidget['4']['appearance']['box-border-right-width'] = (isset($_POST['box-border-width']) ? sanitize_text_field(wp_unslash($_POST['box-border-width'])) : '');
+$wpttstWidget['4']['appearance']['box-border-bottom-width'] = (isset($_POST['box-border-width']) ? sanitize_text_field(wp_unslash($_POST['box-border-width'])) : '');
+$wpttstWidget['4']['appearance']['box-border-radius'] = (isset($_POST['box-border-radius']) ? sanitize_text_field(wp_unslash($_POST['box-border-radius'])) : '');
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -385,23 +390,23 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-font')
+else if ($wpttstCommand == 'save-font')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['profile-font-size'] = sanitize_text_field($_POST['profile-font-size']);
-$widget['4']['appearance']['profile-color'] = sanitize_hex_color($_POST['profile-color']);
-$widget['4']['appearance']['review-font-size'] = sanitize_text_field($_POST['review-font-size']);
-$widget['4']['appearance']['text-color'] = sanitize_hex_color($_POST['text-color']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['profile-font-size'] = (isset($_POST['profile-font-size']) ? sanitize_text_field(wp_unslash($_POST['profile-font-size'])) : '');
+$wpttstWidget['4']['appearance']['profile-color'] = (isset($_POST['profile-color']) ? sanitize_hex_color(wp_unslash($_POST['profile-color'])) : null);
+$wpttstWidget['4']['appearance']['review-font-size'] = (isset($_POST['review-font-size']) ? sanitize_text_field(wp_unslash($_POST['review-font-size'])) : '');
+$wpttstWidget['4']['appearance']['text-color'] = (isset($_POST['text-color']) ? sanitize_hex_color(wp_unslash($_POST['text-color'])) : null);
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -409,20 +414,20 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-slider-interval')
+else if ($wpttstCommand == 'save-slider-interval')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['navigation']['slider_interval'] = sanitize_text_field($_POST['slider-interval']);
-$widget['4']['last_saved'] = 'navigation';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['navigation']['slider_interval'] = (isset($_POST['slider-interval']) ? sanitize_text_field(wp_unslash($_POST['slider-interval'])) : '');
+$wpttstWidget['4']['last_saved'] = 'navigation';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -430,20 +435,20 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-review-lines')
+else if ($wpttstCommand == 'save-review-lines')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['review-lines'] = sanitize_text_field($_POST['review-lines']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['review-lines'] = (isset($_POST['review-lines']) ? sanitize_text_field(wp_unslash($_POST['review-lines'])) : '');
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -451,19 +456,19 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-display_type')
+else if ($wpttstCommand == 'save-display_type')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['display_type'] = sanitize_text_field($_POST['display_type']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['display_type'] = (isset($_POST['display_type']) ? sanitize_text_field(wp_unslash($_POST['display_type'])) : '');
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -471,19 +476,19 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-text-align')
+else if ($wpttstCommand == 'save-text-align')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['text-align'] = sanitize_text_field($_POST['text_align']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['text-align'] = (isset($_POST['text_align']) ? sanitize_text_field(wp_unslash($_POST['text_align'])) : '');
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -491,19 +496,19 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-arrow')
+else if ($wpttstCommand == 'save-arrow')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['nav'] = sanitize_text_field($_POST['arrow']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['nav'] = (isset($_POST['arrow']) ? sanitize_text_field(wp_unslash($_POST['arrow'])) : '');
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -511,19 +516,19 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-dots')
+else if ($wpttstCommand == 'save-dots')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['dots'] = sanitize_text_field($_POST['dots']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['dots'] = (isset($_POST['dots']) ? sanitize_text_field(wp_unslash($_POST['dots'])) : '');
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -531,19 +536,19 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-dateformat')
+else if ($wpttstCommand == 'save-dateformat')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['appearance']['date_format'] = sanitize_text_field($_POST['date_format']);
-$widget['4']['last_saved'] = 'appearance';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['appearance']['date_format'] = (isset($_POST['date_format']) ? sanitize_text_field(wp_unslash($_POST['date_format'])) : '');
+$wpttstWidget['4']['last_saved'] = 'appearance';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -551,19 +556,19 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'save-navigation')
+else if ($wpttstCommand == 'save-navigation')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 4;
-$widget['saved'] = 4;
-$widget['4']['navigation']['navigation_style'] = sanitize_text_field($_POST['navigation_style']);
-$widget['4']['last_saved'] = 'navigation';
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 4;
+$wpttstWidget['saved'] = 4;
+$wpttstWidget['4']['navigation']['navigation_style'] = (isset($_POST['navigation_style']) ? sanitize_text_field(wp_unslash($_POST['navigation_style'])) : '');
+$wpttstWidget['4']['last_saved'] = 'navigation';
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {
@@ -571,18 +576,18 @@ echo '<script>location.href="admin.php?page=' . esc_attr($page) . '&step=1"</scr
 exit;
 }
 }
-else if ($ti_command == 'setup-widget')
+else if ($wpttstCommand == 'setup-widget')
 {
 if ($id)
 {
-$w = $trustindex_testimonials_pm->get_widget($id);
-$widget = unserialize($w->value);
-$widget_name = $w->name;
-$widget['current'] = 5;
-$widget['saved'] = 5;
-$serialized_widget = serialize($widget);
-$trustindex_testimonials_pm->save_css($id, $widget);
-$trustindex_testimonials_pm->update_widget($id, $widget_name, $serialized_widget);
+$wpttstW = $wpttstPluginManager->getWidget($id);
+$wpttstWidget = unserialize($wpttstW->value);
+$wpttstWidgetName = $wpttstW->name;
+$wpttstWidget['current'] = 5;
+$wpttstWidget['saved'] = 5;
+$wpttstSerializedWidget = serialize($wpttstWidget);
+$wpttstPluginManager->saveCss($id, $wpttstWidget);
+$wpttstPluginManager->updateWidget($id, $wpttstWidgetName, $wpttstSerializedWidget);
 }
 else
 {

@@ -1,7 +1,8 @@
 <?php
-function wpttst_register_cpt() {
+defined('ABSPATH') or die('No script kiddies please!');
+function wpttstRegisterCpt() {
 if ( ! post_type_exists( 'wpt-testimonial' ) ) {
-$args = wpttst_get_cpt_defaults();
+$args = wpttstGetCptDefaults();
 $args['labels'] = apply_filters( 'wpttst_testimonial_labels', $args['labels'] );
 $args['supports'] = apply_filters( 'wpttst_testimonial_supports', $args['supports'] );
 $args['exclude_from_search'] = apply_filters( 'wpttst_exclude_from_search', $args['exclude_from_search'] );
@@ -9,13 +10,13 @@ $args['taxonomies'] = apply_filters( 'wpttst_testimonial_taxonomies', $args['tax
 register_post_type( 'wpt-testimonial', apply_filters( 'wpttst_post_type', $args ) );
 }
 if ( ! taxonomy_exists( 'wpt-testimonial-category' ) && apply_filters( 'wpttst_register_taxonomy', true ) ) {
-$args = wpttst_get_tax_defaults();
+$args = wpttstGetTaxDefaults();
 $args['labels'] = apply_filters( 'wpttst_taxonomy_labels', $args['labels'] );
 register_taxonomy( 'wpt-testimonial-category', array( 'wpt-testimonial' ), apply_filters( 'wpttst_taxonomy', $args ) );
 }
 }
-add_action( 'init', 'wpttst_register_cpt', 12 );
-function wpttst_get_cpt_defaults() {
+add_action( 'init', 'wpttstRegisterCpt', 12 );
+function wpttstGetCptDefaults() {
 $labels = array(
 'name' => esc_html_x( 'My Testimonials', 'post type general name', 'testimonial-widgets' ),
 'singular_name' => esc_html_x( 'Testimonial', 'post type singular name', 'testimonial-widgets' ),
@@ -72,7 +73,7 @@ $args = array(
 );
 return $args;
 }
-function wpttst_get_tax_defaults() {
+function wpttstGetTaxDefaults() {
 $labels = array(
 'name' => esc_html__( 'Testimonial Categories', 'testimonial-widgets' ),
 'singular_name' => esc_html__( 'Testimonial Category', 'testimonial-widgets' ),
@@ -87,64 +88,70 @@ $args = array(
 );
 return $args;
 }
-function wpttst_testimonial_supports( $supports ) {
+function wpttstTestimonialSupports( $supports ) {
 $options = get_option( 'wpttst_options' );
 if ( isset( $options['support_custom_fields'] ) && $options['support_custom_fields'] )
 $supports[] = 'custom-fields';
 return $supports;
 }
-add_filter( 'wpttst_testimonial_supports', 'wpttst_testimonial_supports' );
-function wpttst_updated_messages( $messages ) {
+add_filter( 'wpttst_testimonial_supports', 'wpttstTestimonialSupports' );
+function wpttstUpdatedMessages( $messages ) {
 global $post;
-$revision = isset($_GET['revision']) ? sanitize_text_field($_GET['revision']) : null;
-$preview_url = get_preview_post_link( $post );
-$add_new_testimonial = 'post-new.php?post_type=wpt-testimonial';
-$add_new_widget = 'admin.php?page=testimonial-widgets/tabs/create-widget.php';
-$preview_post_link_html = sprintf( ' Add <a href="%1$s">%2$s</a> or <a href="%3$s">%4$s</a>.',
-esc_url( $add_new_testimonial ),
+$revision = isset($_GET['revision']) ? sanitize_text_field(wp_unslash($_GET['revision'])) : null;
+$previewUrl = get_preview_post_link( $post );
+$addNewTestimonial = 'post-new.php?post_type=wpt-testimonial';
+$addNewWidget = 'admin.php?page=testimonial-widgets/tabs/create-widget.php';
+$previewPostLinkHtml = sprintf( ' Add <a href="%1$s">%2$s</a> or <a href="%3$s">%4$s</a>.',
+esc_url( $addNewTestimonial ),
 esc_html__( 'new testimonial', 'testimonial-widgets' ),
-esc_url( $add_new_widget ),
+esc_url( $addNewWidget ),
 esc_html__( 'create testimonial widget', 'testimonial-widgets' )
 );
-$view_post_link_html = sprintf( ' Add <a href="%1$s">%2$s</a> or <a href="%3$s">%4$s</a>.',
-esc_url( $add_new_testimonial ),
+$viewPostLinkHtml = sprintf( ' Add <a href="%1$s">%2$s</a> or <a href="%3$s">%4$s</a>.',
+esc_url( $addNewTestimonial ),
 esc_html__( 'new testimonial', 'testimonial-widgets' ),
-esc_url( $add_new_widget ),
+esc_url( $addNewWidget ),
 esc_html__( 'create testimonial widget', 'testimonial-widgets' )
 );
-$scheduled_post_link_html = sprintf( ' Add <a href="%1$s">%2$s</a> or <a href="%3$s">%4$s</a>.',
-esc_url( $add_new_testimonial ),
+$scheduledPostLinkHtml = sprintf( ' Add <a href="%1$s">%2$s</a> or <a href="%3$s">%4$s</a>.',
+esc_url( $addNewTestimonial ),
 esc_html__( 'new testimonial', 'testimonial-widgets' ),
-esc_url( $add_new_widget ),
+esc_url( $addNewWidget ),
 esc_html__( 'create testimonial widget', 'testimonial-widgets' )
 );
 /* translators: Publish box date format, see https://secure.php.net/date */
-$scheduled_date = date_i18n( 'M j, Y @ H:i', strtotime( $post->post_date ) );
+$scheduledDate = date_i18n( 'M j, Y @ H:i', strtotime( $post->post_date ) );
 $messages['wpt-testimonial'] = array(
 0 => '',
-1 => esc_html__( 'Testimonial updated.', 'testimonial-widgets' ) . $view_post_link_html,
+1 => esc_html__( 'Testimonial updated.', 'testimonial-widgets' ) . $viewPostLinkHtml,
 2 => esc_html__( 'Custom field updated.', 'testimonial-widgets' ),
 3 => esc_html__( 'Custom field deleted.', 'testimonial-widgets' ),
 4 => esc_html__( 'Testimonial updated.', 'testimonial-widgets' ),
 /* translators: %s: date and time of the revision */
 5 => $revision ? sprintf( esc_html__( 'Testimonial restored to revision from %s.', 'testimonial-widgets' ), wp_post_revision_title( absint( $revision ), false ) ) : false,
-6 => esc_html__( 'Testimonial saved.', 'testimonial-widgets' ) . $view_post_link_html,
+6 => esc_html__( 'Testimonial saved.', 'testimonial-widgets' ) . $viewPostLinkHtml,
 7 => esc_html__( 'Testimonial saved.', 'testimonial-widgets' ),
-8 => esc_html__( 'Testimonial submitted.', 'testimonial-widgets' ) . $preview_post_link_html,
-9 => sprintf( esc_html__( 'Testimonial scheduled for: %s.', 'testimonial-widgets' ), '<strong>' . $scheduled_date . '</strong>' ) . $scheduled_post_link_html,
-10 => esc_html__( 'Testimonial draft updated.', 'testimonial-widgets' ) . $preview_post_link_html,
+8 => esc_html__( 'Testimonial submitted.', 'testimonial-widgets' ) . $previewPostLinkHtml,
+/* translators: %s: scheduled publish date */
+9 => sprintf( esc_html__( 'Testimonial scheduled for: %s.', 'testimonial-widgets' ), '<strong>' . $scheduledDate . '</strong>' ) . $scheduledPostLinkHtml,
+10 => esc_html__( 'Testimonial draft updated.', 'testimonial-widgets' ) . $previewPostLinkHtml,
 );
 return $messages;
 }
-add_filter( 'post_updated_messages', 'wpttst_updated_messages' );
-function wpttst_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
-$bulk_messages['wpt-testimonial'] = array(
-'updated' => _n( '%s testimonial updated.', '%s testimonials updated.', $bulk_counts['updated'], 'testimonial-widgets' ),
-'locked' => ( 1 == $bulk_counts['locked'] ) ? esc_html__( '1 testimonial not updated, somebody is editing it.', 'testimonial-widgets' ) : _n( '%s testimonial not updated, somebody is editing it.', '%s testimonials not updated, somebody is editing them.', $bulk_counts['locked'], 'testimonial-widgets' ),
-'deleted' => _n( '%s testimonial permanently deleted.', '%s testimonials permanently deleted.', $bulk_counts['deleted'], 'testimonial-widgets' ),
-'trashed' => _n( '%s testimonial moved to the Trash.', '%s testimonials moved to the Trash.', $bulk_counts['trashed'], 'testimonial-widgets' ),
-'untrashed' => _n( '%s testimonial restored from the Trash.', '%s testimonials restored from the Trash.', $bulk_counts['untrashed'], 'testimonial-widgets' ),
+add_filter( 'post_updated_messages', 'wpttstUpdatedMessages' );
+function wpttstBulkUpdatedMessages( $bulkMessages, $bulkCounts ) {
+$bulkMessages['wpt-testimonial'] = array(
+/* translators: %s: number of testimonials */
+'updated' => _n( '%s testimonial updated.', '%s testimonials updated.', $bulkCounts['updated'], 'testimonial-widgets' ),
+/* translators: %s: number of testimonials */
+'locked' => ( 1 == $bulkCounts['locked'] ) ? esc_html__( '1 testimonial not updated, somebody is editing it.', 'testimonial-widgets' ) : _n( '%s testimonial not updated, somebody is editing it.', '%s testimonials not updated, somebody is editing them.', $bulkCounts['locked'], 'testimonial-widgets' ),
+/* translators: %s: number of testimonials */
+'deleted' => _n( '%s testimonial permanently deleted.', '%s testimonials permanently deleted.', $bulkCounts['deleted'], 'testimonial-widgets' ),
+/* translators: %s: number of testimonials */
+'trashed' => _n( '%s testimonial moved to the Trash.', '%s testimonials moved to the Trash.', $bulkCounts['trashed'], 'testimonial-widgets' ),
+/* translators: %s: number of testimonials */
+'untrashed' => _n( '%s testimonial restored from the Trash.', '%s testimonials restored from the Trash.', $bulkCounts['untrashed'], 'testimonial-widgets' ),
 );
-return $bulk_messages;
+return $bulkMessages;
 }
-add_filter( 'bulk_post_updated_messages', 'wpttst_bulk_updated_messages', 10, 2 );
+add_filter( 'bulk_post_updated_messages', 'wpttstBulkUpdatedMessages', 10, 2 );

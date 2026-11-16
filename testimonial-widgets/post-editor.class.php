@@ -1,24 +1,25 @@
 <?php
+defined('ABSPATH') or die('No script kiddies please!');
 class TrustindexTestimonialsPostEditor {
 
 public function __construct() {
 }
 
 public static function init() {
-self::add_actions();
+self::addActions();
 }
 
-public static function add_actions() {
-add_action( 'add_meta_boxes_wpt-testimonial', array( __CLASS__, 'add_meta_boxes' ) );
-add_filter('hidden_meta_boxes', array( __CLASS__, 'hide_comment' ), 10, 2);
-add_action( 'save_post_wpt-testimonial', array( __CLASS__, 'save_details' ) );
-add_action( 'wp_ajax_wpttst_edit_rating', array( __CLASS__, 'edit_rating' ) );
-add_filter( 'wp_insert_post_data', array( __CLASS__, 'prevent_shortcode' ), 10, 2 );
+public static function addActions() {
+add_action( 'add_meta_boxes_wpt-testimonial', array( __CLASS__, 'addMetaBoxes' ) );
+add_filter('hidden_meta_boxes', array( __CLASS__, 'hideComment' ), 10, 2);
+add_action( 'save_post_wpt-testimonial', array( __CLASS__, 'saveDetails' ) );
+add_action( 'wp_ajax_wpttst_edit_rating', array( __CLASS__, 'editRating' ) );
+add_filter( 'wp_insert_post_data', array( __CLASS__, 'preventShortcode' ), 10, 2 );
 }
 
-public static function hide_comment($hidden, $screen) {
-$post_type= $screen->id;
-if ($post_type == 'wpt-testimonial')
+public static function hideComment($hidden, $screen) {
+$postType= $screen->id;
+if ($postType == 'wpt-testimonial')
 {
 $hidden[]= 'commentstatusdiv';
 $hidden[]= 'commentsdiv';
@@ -26,22 +27,22 @@ $hidden[]= 'commentsdiv';
 return $hidden;
 }
 
-public static function add_meta_boxes() {
+public static function addMetaBoxes() {
 add_meta_box(
 'details',
 esc_html_x( 'Client Details', 'post editor', 'testimonial-widgets' ),
-array( __CLASS__, 'meta_options' ),
+array( __CLASS__, 'metaOptions' ),
 'wpt-testimonial',
 'normal',
 'high'
 );
 }
 
-public static function meta_options() {
+public static function metaOptions() {
 global $post, $pagenow;
-$post = wpttst_get_post( $post );
-$fields = wpttst_get_custom_fields();
-$is_new = ( 'post-new.php' == $pagenow );
+$post = wpttstGetPost( $post );
+$fields = wpttstGetCustomFields();
+$isNew = ( 'post-new.php' == $pagenow );
  wp_nonce_field ( plugin_basename(__FILE__), 'wpttst_metabox_nonce');
 ?>
 <?php do_action( 'wpttst_before_client_fields_table' ); ?>
@@ -61,12 +62,12 @@ continue;
  <tr>
  <th>
  <label for="<?php echo esc_attr( $field['name'] ); ?>">
-<?php echo apply_filters( 'wpttst_l10n', $field['label'], 'testimonial-widgets-form-fields', $field['name'] . ' : label' ); ?>
+<?php echo esc_html( apply_filters( 'wpttst_l10n', $field['label'], 'testimonial-widgets-form-fields', $field['name'] . ' : label' ) ); ?>
  </label>
  </th>
  <td>
  <div class="<?php echo esc_attr( $field['input_type'] ); ?>">
-<?php self::meta_option( $field, $post, $is_new ); ?>
+<?php self::metaOption( $field, $post, $isNew ); ?>
  </div>
  </td>
  </tr>
@@ -79,44 +80,44 @@ do_action( 'wpttst_after_client_fields' );
 do_action( 'wpttst_after_client_fields_table' );
 }
 
-public static function meta_option( $field, $post, $is_new ) {
+public static function metaOption( $field, $post, $isNew ) {
 if ( isset( $field['action_input'] ) && $field['action_input'] ) {
-self::meta_option__action( $field, $post, $is_new );
+self::metaOptionAction( $field, $post, $isNew );
 }
 else {
 switch ( $field['input_type'] ) {
 case 'rating' :
-self::meta_option__rating( $field, $post, $is_new );
+self::metaOptionRating( $field, $post, $isNew );
 break;
 case 'url' :
-self::meta_option__url( $field, $post, $is_new );
+self::metaOptionUrl( $field, $post, $isNew );
 break;
 case 'checkbox' :
-self::meta_option__checkbox( $field, $post, $is_new );
+self::metaOptionCheckbox( $field, $post, $isNew );
 break;
 case 'shortcode' :
-self::meta_option__shortcode( $field, $post, $is_new );
+self::metaOptionShortcode( $field, $post, $isNew );
 break;
 case 'textarea' :
-self::meta_option__textarea( $field, $post, $is_new );
+self::metaOptionTextarea( $field, $post, $isNew );
 break;
 default :
-self::meta_option__text( $field, $post, $is_new );
+self::metaOptionText( $field, $post, $isNew );
 }
 }
 }
 
-private static function meta_option__action( $field, $post, $is_new ) {
+private static function metaOptionAction( $field, $post, $isNew ) {
 if ( isset( $field['action_input'] ) && $field['action_input'] ) {
 do_action( $field['action_input'], $field, $post->{$field['name']} );
 }
 }
 
-private static function meta_option__text( $field, $post, $is_new ) {
+private static function metaOptionText( $field, $post, $isNew ) {
 printf( '<input id="%2$s" type="%1$s" class="custom-input" name="custom[%2$s]" value="%3$s">', esc_attr( $field['input_type'] ), esc_attr( $field['name'] ), esc_attr( $post->{$field['name']} ) );
 }
 
-private static function meta_option__textarea( $field, $post, $is_new ) {
+private static function metaOptionTextarea( $field, $post, $isNew ) {
 printf(
 '<textarea id="%1$s" name="custom[%1$s]" class="custom-input">%2$s</textarea>',
 esc_attr( $field['name'] ),
@@ -124,7 +125,7 @@ wp_kses_post( $post->{$field['name']} )
 );
 }
 
-private static function meta_option__url( $field, $post, $is_new ) {
+private static function metaOptionUrl( $field, $post, $isNew ) {
 ?>
  <div class="input-url">
 <?php printf( '<input id="%2$s" type="%1$s" class="custom-input" name="custom[%2$s]" value="%3$s" size="">', esc_attr( $field['input_type'] ), esc_html( $field['name'] ), esc_attr( $post->{$field['name']} ) ); ?>
@@ -157,13 +158,13 @@ private static function meta_option__url( $field, $post, $is_new ) {
 <?php
 }
 
-private static function meta_option__checkbox( $field, $post, $is_new ) {
+private static function metaOptionCheckbox( $field, $post, $isNew ) {
 printf( '<input id="%2$s" type="%1$s" class="custom-input" name="custom[%2$s]" value="%3$s" %4$s>', esc_attr( $field['input_type'] ), esc_attr( $field['name'] ), 1, checked( $post->{$field['name']}, 1, false ) );
 }
 
-private static function meta_option__rating( $field, $post, $is_new ) {
+private static function metaOptionRating( $field, $post, $isNew ) {
 $rating = get_post_meta( $post->ID, $field['name'], true );
-if ( ! $rating || $is_new ) {
+if ( ! $rating || $isNew ) {
 $rating = 5;
 }
 ?>
@@ -173,38 +174,39 @@ $rating = 5;
  <!-- form -->
  <div class="rating-form">
  <span class="inner">
- <?php wpttst_star_rating_form( $field, $rating, 'in-metabox', true, 'custom' ); ?>
+ <?php wpttstStarRatingForm( $field, $rating, 'in-metabox', true, 'custom' ); ?>
  </span>
  </div>
  </div>
 <?php
 }
 
-public static function meta_option__shortcode( $field, $post, $is_new ) {
+public static function metaOptionShortcode( $field, $post, $isNew ) {
  $shortcode = str_replace( array( '[', ']' ), array( '', '' ), $field['shortcode_on_display'] );
  if ( shortcode_exists( $shortcode ) ) {
  echo do_shortcode( esc_attr($field['shortcode_on_display']) );
  } else {
+ /* translators: %s: shortcode name */
  echo '<div class="custom-input not-found">' . sprintf( esc_html__( 'shortcode %s not found', 'testimonial-widgets' ), '<code>' . esc_html($field['shortcode_on_display']) . '</code>' ) . '</div>';
  }
 }
 
-public static function save_details() {
-if ( ! isset( $_POST['custom'] ) || !wp_verify_nonce( $_POST['wpttst_metabox_nonce'], plugin_basename(__FILE__))) {
+public static function saveDetails() {
+if ( ! isset( $_POST['custom'], $_POST['wpttst_metabox_nonce'] ) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wpttst_metabox_nonce'] ) ), plugin_basename(__FILE__))) {
 return;
 }
-$post_id = absint( sanitize_text_field($_POST['post_ID']) );
+$postId = isset( $_POST['post_ID'] ) ? absint( sanitize_text_field( wp_unslash( $_POST['post_ID'] ) ) ) : 0;
 if (is_array($_POST['custom']))
 {
-$custom = array_map( 'sanitize_text_field', $_POST['custom']);
+$custom = array_map( 'sanitize_text_field', wp_unslash( $_POST['custom'] ) );
 }
 else
 {
 $custom = null;
 }
-$custom_fields = wpttst_get_custom_fields();
+$customFields = wpttstGetCustomFields();
 $checkboxes = array();
-foreach ( $custom_fields as $key => $field ) {
+foreach ( $customFields as $key => $field ) {
 if ( 'checkbox' == $field['input_type'] ) {
 $checkboxes[ $key ] = 0;
 }
@@ -212,57 +214,57 @@ $checkboxes[ $key ] = 0;
 if ( $checkboxes ) {
 $custom = array_merge( $checkboxes, $custom );
 }
-$custom_fields['nofollow']['input_type'] = '';
-$custom_fields['noopener']['input_type'] = '';
- $custom_fields['noreferrer']['input_type'] = '';
+$customFields['nofollow']['input_type'] = '';
+$customFields['noopener']['input_type'] = '';
+ $customFields['noreferrer']['input_type'] = '';
  
 foreach ( $custom as $key => $value ) {
  $action = 'update';
- $sanitized_value = '';
- if ( isset( $custom_fields[ $key ] ) ) {
-if ( 'rating' == $custom_fields[ $key ]['input_type'] && !$value ) {
+ $sanitizedValue = '';
+ if ( isset( $customFields[ $key ] ) ) {
+if ( 'rating' == $customFields[ $key ]['input_type'] && !$value ) {
 $action = 'delete';
 }
 }
-if ( isset($custom_fields[ $key ]['input_type']) && 'text' == $custom_fields[ $key ]['input_type'] ) {
-$sanitized_value = wp_filter_post_kses( $value );
-}elseif ( isset($custom_fields[ $key ]['input_type']) && 'email' == $custom_fields[ $key ]['input_type'] ) {
-$sanitized_value = sanitize_email( $value );
-}elseif ( isset($custom_fields[ $key ]['input_type']) && 'url' == $custom_fields[ $key ]['input_type'] ) {
-$sanitized_value = esc_url_raw( $value );
+if ( isset($customFields[ $key ]['input_type']) && 'text' == $customFields[ $key ]['input_type'] ) {
+$sanitizedValue = wp_kses_post( $value );
+}elseif ( isset($customFields[ $key ]['input_type']) && 'email' == $customFields[ $key ]['input_type'] ) {
+$sanitizedValue = sanitize_email( $value );
+}elseif ( isset($customFields[ $key ]['input_type']) && 'url' == $customFields[ $key ]['input_type'] ) {
+$sanitizedValue = esc_url_raw( $value );
 }else{
-$sanitized_value = sanitize_text_field( $value );
+$sanitizedValue = sanitize_text_field( $value );
 }
 if ( 'update' == $action ) {
-update_post_meta( $post_id, $key, $sanitized_value );
+update_post_meta( $postId, $key, wp_slash( $sanitizedValue ) );
 }
 else {
-delete_post_meta( $post_id, $key );
+delete_post_meta( $postId, $key );
 }
 }
 }
 
-public static function prevent_shortcode( $data, $postarr ) {
+public static function preventShortcode( $data, $postarr ) {
  if ( 'wpt-testimonial' == $data['post_type'] ) {
  $data['post_content'] = preg_replace( "/\[testimonial_view (.*)\]/", '', $data['post_content'] );
  }
  return $data;
 }
 
-public static function edit_rating() {
-$post_id = isset( $_POST['post_id'] ) ? intval(sanitize_text_field($_POST['post_id'])) : 0;
-$rating = isset( $_POST['rating'] ) ? intval(sanitize_text_field($_POST['rating'])) : 0;
-$name = isset( $_POST['field_name'] ) ? sanitize_text_field($_POST['field_name']) : 'rating';
+public static function editRating() {
+check_ajax_referer( 'editrating', 'editratingnonce' );
+$postId = isset( $_POST['post_id'] ) ? intval(sanitize_text_field(wp_unslash($_POST['post_id']))) : 0;
+$rating = isset( $_POST['rating'] ) ? intval(sanitize_text_field(wp_unslash($_POST['rating']))) : 0;
+$name = isset( $_POST['field_name'] ) ? sanitize_text_field(wp_unslash($_POST['field_name'])) : 'rating';
 if ($rating == 0)
 {
 $rating = 5;
 }
-check_ajax_referer( 'editrating', 'editratingnonce' );
-if ( $post_id ) {
+if ( $postId ) {
 if ( $rating ) {
-update_post_meta( $post_id, $name, $rating );
+update_post_meta( $postId, $name, $rating );
 } else {
-delete_post_meta( $post_id, $name );
+delete_post_meta( $postId, $name );
 }
 }
 }

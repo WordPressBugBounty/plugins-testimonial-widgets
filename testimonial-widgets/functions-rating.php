@@ -1,10 +1,11 @@
 <?php
-function wpttst_star_rating_form( $field, $value, $class, $echo = true, $field_array = '' ) {
+defined('ABSPATH') or die('No script kiddies please!');
+function wpttstStarRatingForm( $field, $value, $class, $echo = true, $fieldArray = '' ) {
  $value = (int) $value;
 if ( $field && is_array( $field ) && isset( $field['name'] ) ) {
 $name = $field['name'];
-if ( $field_array ) {
- $name = $field_array . '[' . $name . ']';
+if ( $fieldArray ) {
+ $name = $fieldArray . '[' . $name . ']';
 }
 } else {
 $name = 'rating';
@@ -17,7 +18,7 @@ ob_start(); ?>
  class="strong-rating"
  data-field-type="rating"
  tabindex="0">
- <legend><?php esc_html_e('rating fields', 'strong-testimonials' ) ?></legend><!--
+ <legend><?php esc_html_e('rating fields', 'testimonial-widgets' ) ?></legend><!--
 --><input type="radio" id="<?php echo esc_attr( $field['name'] ); ?>-star1" name="<?php echo esc_attr( $name ); ?>" value="1" <?php checked( $value, 1 ); ?> /><!--
 --><label for="<?php echo esc_attr( $field['name'] ); ?>-star1" title="1 star"></label><!--
 --><input type="radio" id="<?php echo esc_attr( $field['name'] ); ?>-star2" name="<?php echo esc_attr( $name ); ?>" value="2" <?php checked( $value, 2 ); ?> /><!--
@@ -35,7 +36,7 @@ $html = ob_get_contents();
 ob_end_clean();
 $html = preg_replace( '/<!--(.|\s)*?-->/', '', $html );
 if ( $echo ) {
-$allowed_html = array(
+$allowedHtml = array(
 'div' => array(
 'class' => array(),
 ),
@@ -62,12 +63,12 @@ $allowed_html = array(
 'value' => array(),
 )
 );
-echo wp_kses($html, $allowed_html);
+echo wp_kses($html, $allowedHtml);
 return true;
 }
  return $html;
 }
-function wpttst_star_rating_display( $value = 0, $class = 'in-view', $echo = true ) {
+function wpttstStarRatingDisplay( $value = 0, $class = 'in-view', $echo = true ) {
  $value = (int) $value;
 ob_start(); ?>
 <span class="strong-rating-wrapper <?php echo esc_attr( $class ); ?>">
@@ -85,12 +86,12 @@ $html = ob_get_contents();
 ob_end_clean();
 $html = preg_replace( '/<!--(.|\s)*?-->/', '', $html );
 if ( $echo ) {
-$allowed_html = array(
+$allowedHtml = array(
 'span' => array(
 'class' => array()
  ),
 );
- echo wp_kses($html, $allowed_html);
+ echo wp_kses($html, $allowedHtml);
  return true;
 }
  return $html;
